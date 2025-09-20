@@ -1,0 +1,19 @@
+######## Flutter / Dart ########
+-keep class io.flutter.app.** { *; }
+-keep class io.flutter.plugin.** { *; }
+-keep class io.flutter.util.** { *; }
+-keep class io.flutter.view.** { *; }
+-keep class io.flutter.embedding.** { *; }
+-keep class io.flutter.embedding.engine.** { *; }
+-keep class io.flutter.embedding.android.** { *; }
+-keep class io.flutter.embedding.common.** { *; }
+-dontwarn io.flutter.embedding.**
+
+######## Razorpay ########
+# Keep Razorpay SDK classes
+-keep class com.razorpay.** { *; }
+-dontwarn com.razorpay.**
+
+# Workaround for missing annotations
+-dontwarn proguard.annotation.**
+

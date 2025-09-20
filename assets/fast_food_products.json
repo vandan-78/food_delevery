@@ -1,0 +1,1226 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "title": "Classic Cheeseburger",
+      "description": "A juicy beef patty topped with cheddar cheese, lettuce, tomato, pickles, onions, and a special sauce, served on a toasted bun.",
+      "category": "fast food",
+      "price": 6.99,
+      "discountPercentage": 10.0,
+      "rating": 4.5,
+      "stock": 150,
+      "tags": [
+        "fast food",
+        "burger"
+      ],
+      "brand": "Burger Bonanza",
+      "sku": "FAS-BUR-CLA-001",
+      "weight": 8,
+      "dimensions": {
+        "width": 12.5,
+        "height": 8.0,
+        "depth": 12.5
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Best burger ever!",
+          "date": "2025-09-10T10:00:00.000Z",
+          "reviewerName": "Emma Watson",
+          "reviewerEmail": "emma.watson@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Really tasty, but a bit messy.",
+          "date": "2025-09-11T12:30:00.000Z",
+          "reviewerName": "Liam Smith",
+          "reviewerEmail": "liam.smith@x.dummyjson.com"
+        },
+        {
+          "rating": 3,
+          "comment": "Good but could use more sauce.",
+          "date": "2025-09-12T09:15:00.000Z",
+          "reviewerName": "Olivia Brown",
+          "reviewerEmail": "olivia.brown@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-10T10:00:00.000Z",
+        "updatedAt": "2025-09-10T10:00:00.000Z",
+        "barcode": "1234567890123",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/ClassicCheeseburger1.jpg",
+        "assets/images/ClassicCheeseburger2.jpg",
+        "assets/images/ClassicCheeseburger3.jpg"
+      ],
+      "thumbnail": "https://png.pngtree.com/png-clipart/20231018/original/pngtree-classic-burger-png-image_13354260.png"
+    },
+    {
+      "id": 2,
+      "title": "Pepperoni Pizza",
+      "description": "A classic pizza with a crispy crust, tangy tomato sauce, mozzarella cheese, and pepperoni slices.",
+      "category": "fast food",
+      "price": 12.99,
+      "discountPercentage": 15.0,
+      "rating": 4.7,
+      "stock": 100,
+      "tags": [
+        "fast food",
+        "pizza"
+      ],
+      "brand": "Pizza Palace",
+      "sku": "FAS-PIZ-PEP-002",
+      "weight": 12,
+      "dimensions": {
+        "width": 30.0,
+        "height": 2.5,
+        "depth": 30.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Perfect pizza, great flavor!",
+          "date": "2025-09-10T11:00:00.000Z",
+          "reviewerName": "Noah Johnson",
+          "reviewerEmail": "noah.johnson@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Loved the crust, but needs more cheese.",
+          "date": "2025-09-11T13:45:00.000Z",
+          "reviewerName": "Ava Davis",
+          "reviewerEmail": "ava.davis@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Always a hit at parties!",
+          "date": "2025-09-12T10:20:00.000Z",
+          "reviewerName": "Lucas Brown",
+          "reviewerEmail": "lucas.brown@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-10T11:00:00.000Z",
+        "updatedAt": "2025-09-10T11:00:00.000Z",
+        "barcode": "1234567890124",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/PepperoniPizza3.jpeg",
+        "assets/images/PepperoniPizza1.jpg",
+        "assets/images/PepperoniPizza2.jpg"
+
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2017/12/09/08/18/pizza-3007395_1280.jpg"
+    },
+    {
+      "id": 3,
+      "title": "Crispy Chicken Sandwich",
+      "description": "A crispy fried chicken breast with lettuce, pickles, and mayo, served on a soft bun.",
+      "category": "fast food",
+      "price": 7.49,
+      "discountPercentage": 8.0,
+      "rating": 4.3,
+      "stock": 120,
+      "tags": [
+        "fast food",
+        "chicken"
+      ],
+      "brand": "Chicken Craze",
+      "sku": "FAS-CHI-CRI-003",
+      "weight": 7,
+      "dimensions": {
+        "width": 10.0,
+        "height": 7.5,
+        "depth": 10.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 4,
+          "comment": "Really crispy and delicious!",
+          "date": "2025-09-10T12:00:00.000Z",
+          "reviewerName": "Sophia Wilson",
+          "reviewerEmail": "sophia.wilson@x.dummyjson.com"
+        },
+        {
+          "rating": 3,
+          "comment": "Good, but bun was a bit soggy.",
+          "date": "2025-09-11T14:00:00.000Z",
+          "reviewerName": "Ethan Taylor",
+          "reviewerEmail": "ethan.taylor@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "My favorite sandwich!",
+          "date": "2025-09-12T11:00:00.000Z",
+          "reviewerName": "Isabella Martinez",
+          "reviewerEmail": "isabella.martinez@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-10T12:00:00.000Z",
+        "updatedAt": "2025-09-10T12:00:00.000Z",
+        "barcode": "1234567890125",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/CrispyChickenSandwich4.jpg",
+        "assets/images/CrispyChickenSandwich1.jpg",
+        "assets/images/CrispyChickenSandwich2.jpg"
+
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2019/11/14/17/29/chicken-sandwich-4626156_1280.jpg"
+    },
+    {
+      "id": 4,
+      "title": "Margherita Pizza",
+      "description": "A traditional pizza with fresh basil, mozzarella cheese, and a rich tomato sauce on a thin crust.",
+      "category": "fast food",
+      "price": 11.99,
+      "discountPercentage": 12.0,
+      "rating": 4.6,
+      "stock": 90,
+      "tags": [
+        "fast food",
+        "pizza"
+      ],
+      "brand": "Pizza Palace",
+      "sku": "FAS-PIZ-MAR-004",
+      "weight": 10,
+      "dimensions": {
+        "width": 30.0,
+        "height": 2.5,
+        "depth": 30.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Fresh and flavorful!",
+          "date": "2025-09-10T13:00:00.000Z",
+          "reviewerName": "Mia Thompson",
+          "reviewerEmail": "mia.thompson@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Great, but could use more basil.",
+          "date": "2025-09-11T15:00:00.000Z",
+          "reviewerName": "James Lee",
+          "reviewerEmail": "james.lee@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Perfect for pizza night!",
+          "date": "2025-09-12T12:00:00.000Z",
+          "reviewerName": "Charlotte Harris",
+          "reviewerEmail": "charlotte.harris@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-10T13:00:00.000Z",
+        "updatedAt": "2025-09-10T13:00:00.000Z",
+        "barcode": "1234567890126",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/MargheritaPizza3.jpg",
+        "assets/images/MargheritaPizza2.jpg",
+        "assets/images/MargheritaPizza1.jpg"
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2017/12/10/17/40/pizza-3010062_1280.jpg"
+    },
+    {
+      "id": 5,
+      "title": "Spicy Chicken Wings",
+      "description": "Crispy chicken wings tossed in a spicy buffalo sauce, served with a side of ranch dressing.",
+      "category": "fast food",
+      "price": 8.99,
+      "discountPercentage": 10.0,
+      "rating": 4.4,
+      "stock": 80,
+      "tags": [
+        "fast food",
+        "chicken"
+      ],
+      "brand": "Wing World",
+      "sku": "FAS-CHI-WIN-005",
+      "weight": 6,
+      "dimensions": {
+        "width": 15.0,
+        "height": 5.0,
+        "depth": 15.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Super spicy and delicious!",
+          "date": "2025-09-10T14:00:00.000Z",
+          "reviewerName": "William Clark",
+          "reviewerEmail": "william.clark@x.dummyjson.com"
+        },
+        {
+          "rating": 3,
+          "comment": "Too spicy for me.",
+          "date": "2025-09-11T16:00:00.000Z",
+          "reviewerName": "Avery Walker",
+          "reviewerEmail": "avery.walker@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Great wings, fast delivery!",
+          "date": "2025-09-12T13:00:00.000Z",
+          "reviewerName": "Evelyn Hall",
+          "reviewerEmail": "evelyn.hall@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-10T14:00:00.000Z",
+        "updatedAt": "2025-09-10T14:00:00.000Z",
+        "barcode": "1234567890127",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/SpicyChickenWings3.jpg",
+        "assets/images/SpicyChickenWings1.jpg",
+        "assets/images/SpicyChickenWings2.jpg"
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2018/03/31/06/31/chicken-wings-3277552_1280.jpg"
+    },
+    {
+      "id": 6,
+      "title": "BBQ Bacon Burger",
+      "description": "A beef patty topped with crispy bacon, cheddar cheese, BBQ sauce, and onion rings, served on a brioche bun.",
+      "category": "fast food",
+      "price": 8.49,
+      "discountPercentage": 9.0,
+      "rating": 4.6,
+      "stock": 110,
+      "tags": [
+        "fast food",
+        "burger"
+      ],
+      "brand": "Burger Bonanza",
+      "sku": "FAS-BUR-BBQ-006",
+      "weight": 9,
+      "dimensions": {
+        "width": 12.5,
+        "height": 8.5,
+        "depth": 12.5
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "The BBQ sauce is amazing!",
+          "date": "2025-09-10T15:00:00.000Z",
+          "reviewerName": "Mason Young",
+          "reviewerEmail": "mason.young@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Really good, but a bit greasy.",
+          "date": "2025-09-11T17:00:00.000Z",
+          "reviewerName": "Amelia King",
+          "reviewerEmail": "amelia.king@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Loved the bacon!",
+          "date": "2025-09-12T14:00:00.000Z",
+          "reviewerName": "Jackson White",
+          "reviewerEmail": "jackson.white@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-10T15:00:00.000Z",
+        "updatedAt": "2025-09-10T15:00:00.000Z",
+        "barcode": "1234567890128",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/BBQBaconBurger1.jpg",
+        "assets/images/BBQBaconBurger2.jpg"
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2017/09/14/14/33/burger-2749240_1280.jpg"
+    },
+    {
+      "id": 7,
+      "title": "Veggie Pizza",
+      "description": "A delicious pizza loaded with bell peppers, onions, mushrooms, olives, and mozzarella cheese on a tomato sauce base.",
+      "category": "fast food",
+      "price": 13.49,
+      "discountPercentage": 11.0,
+      "rating": 4.2,
+      "stock": 85,
+      "tags": [
+        "fast food",
+        "pizza"
+      ],
+      "brand": "Pizza Palace",
+      "sku": "FAS-PIZ-VEG-007",
+      "weight": 11,
+      "dimensions": {
+        "width": 30.0,
+        "height": 2.5,
+        "depth": 30.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 4,
+          "comment": "Great for vegetarians!",
+          "date": "2025-09-10T16:00:00.000Z",
+          "reviewerName": "Harper Adams",
+          "reviewerEmail": "harper.adams@x.dummyjson.com"
+        },
+        {
+          "rating": 3,
+          "comment": "Needed more cheese.",
+          "date": "2025-09-11T18:00:00.000Z",
+          "reviewerName": "Elijah Moore",
+          "reviewerEmail": "elijah.moore@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Fresh veggies, great taste!",
+          "date": "2025-09-12T15:00:00.000Z",
+          "reviewerName": "Aria Scott",
+          "reviewerEmail": "aria.scott@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-10T16:00:00.000Z",
+        "updatedAt": "2025-09-10T16:00:00.000Z",
+        "barcode": "1234567890129",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/VeggiePizza1.jpg"
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2017/12/10/17/40/pizza-3010062_1280.jpg"
+    },
+    {
+      "id": 8,
+      "title": "Chicken Nuggets",
+      "description": "Golden, crispy chicken nuggets served with a choice of dipping sauce.",
+      "category": "fast food",
+      "price": 5.99,
+      "discountPercentage": 7.0,
+      "rating": 4.1,
+      "stock": 200,
+      "tags": [
+        "fast food",
+        "chicken"
+      ],
+      "brand": "Chicken Craze",
+      "sku": "FAS-CHI-NUG-008",
+      "weight": 5,
+      "dimensions": {
+        "width": 10.0,
+        "height": 5.0,
+        "depth": 10.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 4,
+          "comment": "Kids love these!",
+          "date": "2025-09-10T17:00:00.000Z",
+          "reviewerName": "Chloe Lewis",
+          "reviewerEmail": "chloe.lewis@x.dummyjson.com"
+        },
+        {
+          "rating": 3,
+          "comment": "Decent, but a bit dry.",
+          "date": "2025-09-11T19:00:00.000Z",
+          "reviewerName": "Logan Walker",
+          "reviewerEmail": "logan.walker@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Perfect snack!",
+          "date": "2025-09-12T16:00:00.000Z",
+          "reviewerName": "Lily Evans",
+          "reviewerEmail": "lily.evans@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-10T17:00:00.000Z",
+        "updatedAt": "2025-09-10T17:00:00.000Z",
+        "barcode": "1234567890130",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/CrispyChickenNuggets3.jpg",
+        "assets/images/ChickenNuggets1.jpg"
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2017/08/07/14/02/food-2605092_1280.jpg"
+    },
+    {
+      "id": 9,
+      "title": "Double Cheeseburger",
+      "description": "Two juicy beef patties with double cheddar cheese, lettuce, tomato, pickles, and special sauce on a sesame seed bun.",
+      "category": "fast food",
+      "price": 8.99,
+      "discountPercentage": 10.0,
+      "rating": 4.5,
+      "stock": 130,
+      "tags": [
+        "fast food",
+        "burger"
+      ],
+      "brand": "Burger Bonanza",
+      "sku": "FAS-BUR-DOU-009",
+      "weight": 10,
+      "dimensions": {
+        "width": 12.5,
+        "height": 9.0,
+        "depth": 12.5
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "So filling and delicious!",
+          "date": "2025-09-10T18:00:00.000Z",
+          "reviewerName": "Jacob Green",
+          "reviewerEmail": "jacob.green@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Great value for the price.",
+          "date": "2025-09-11T20:00:00.000Z",
+          "reviewerName": "Ella Carter",
+          "reviewerEmail": "ella.carter@x.dummyjson.com"
+        },
+        {
+          "rating": 3,
+          "comment": "Too much cheese for me.",
+          "date": "2025-09-12T17:00:00.000Z",
+          "reviewerName": "Benjamin Foster",
+          "reviewerEmail": "benjamin.foster@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-10T18:00:00.000Z",
+        "updatedAt": "2025-09-10T18:00:00.000Z",
+        "barcode": "1234567890131",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/DoubleCheeseburger2.png",
+        "assets/images/DoubleCheeseburger1.jpeg"
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2017/09/14/14/33/burger-2749240_1280.jpg"
+    },
+    {
+      "id": 10,
+      "title": "Supreme Pizza",
+      "description": "A loaded pizza with pepperoni, sausage, bell peppers, onions, mushrooms, and mozzarella cheese.",
+      "category": "fast food",
+      "price": 14.99,
+      "discountPercentage": 12.0,
+      "rating": 4.8,
+      "stock": 95,
+      "tags": [
+        "fast food",
+        "pizza"
+      ],
+      "brand": "Pizza Palace",
+      "sku": "FAS-PIZ-SUP-010",
+      "weight": 12,
+      "dimensions": {
+        "width": 30.0,
+        "height": 2.5,
+        "depth": 30.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Best pizza ever!",
+          "date": "2025-09-10T19:00:00.000Z",
+          "reviewerName": "Sophie Turner",
+          "reviewerEmail": "sophie.turner@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Loaded with toppings!",
+          "date": "2025-09-11T21:00:00.000Z",
+          "reviewerName": "Daniel Walker",
+          "reviewerEmail": "daniel.walker@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Perfect for sharing!",
+          "date": "2025-09-12T18:00:00.000Z",
+          "reviewerName": "Grace Allen",
+          "reviewerEmail": "grace.allen@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-10T19:00:00.000Z",
+        "updatedAt": "2025-09-10T19:00:00.000Z",
+        "barcode": "1234567890132",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/SupremePizza1.jpg"
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2017/12/09/08/18/pizza-3007395_1280.jpg"
+    },
+    {
+      "id": 11,
+      "title": "French Fries",
+      "description": "Crispy golden fries, perfectly salted and served hot.",
+      "category": "fast food",
+      "price": 3.99,
+      "discountPercentage": 5.0,
+      "rating": 4.3,
+      "stock": 200,
+      "tags": [
+        "fast food",
+        "sides"
+      ],
+      "brand": "Fry Factory",
+      "sku": "FAS-SID-FRI-011",
+      "weight": 4,
+      "dimensions": {
+        "width": 10.0,
+        "height": 5.0,
+        "depth": 10.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 4,
+          "comment": "Crispy and delicious!",
+          "date": "2025-09-10T20:00:00.000Z",
+          "reviewerName": "Zoe Parker",
+          "reviewerEmail": "zoe.parker@x.dummyjson.com"
+        },
+        {
+          "rating": 3,
+          "comment": "A bit too salty.",
+          "date": "2025-09-11T22:00:00.000Z",
+          "reviewerName": "Henry Adams",
+          "reviewerEmail": "henry.adams@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Perfect side dish!",
+          "date": "2025-09-12T19:00:00.000Z",
+          "reviewerName": "Luna Scott",
+          "reviewerEmail": "luna.scott@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-10T20:00:00.000Z",
+        "updatedAt": "2025-09-10T20:00:00.000Z",
+        "barcode": "1234567890133",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/FrenchFries1.jpg"
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2016/11/20/09/06/french-fries-1842583_1280.jpg"
+    },
+    {
+      "id": 12,
+      "title": "Chicken Tenders",
+      "description": "Juicy chicken tenders breaded and fried to perfection, served with honey mustard sauce.",
+      "category": "fast food",
+      "price": 6.49,
+      "discountPercentage": 8.0,
+      "rating": 4.4,
+      "stock": 140,
+      "tags": [
+        "fast food",
+        "chicken"
+      ],
+      "brand": "Chicken Craze",
+      "sku": "FAS-CHI-TEN-012",
+      "weight": 6,
+      "dimensions": {
+        "width": 12.0,
+        "height": 5.0,
+        "depth": 12.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Love the sauce!",
+          "date": "2025-09-10T21:00:00.000Z",
+          "reviewerName": "Aiden Wright",
+          "reviewerEmail": "aiden.wright@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Tasty but a bit small.",
+          "date": "2025-09-11T23:00:00.000Z",
+          "reviewerName": "Sofia Turner",
+          "reviewerEmail": "sofia.turner@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Great for a quick meal!",
+          "date": "2025-09-12T20:00:00.000Z",
+          "reviewerName": "Liam Harris",
+          "reviewerEmail": "liam.harris@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-10T21:00:00.000Z",
+        "updatedAt": "2025-09-10T21:00:00.000Z",
+        "barcode": "1234567890134",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/ChickenTenders1.jpg"
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2017/08/07/14/02/food-2605092_1280.jpg"
+    },
+    {
+      "id": 13,
+      "title": "Hawaiian Pizza",
+      "description": "A tropical pizza with ham, pineapple, mozzarella cheese, and tomato sauce.",
+      "category": "fast food",
+      "price": 13.99,
+      "discountPercentage": 10.0,
+      "rating": 4.3,
+      "stock": 100,
+      "tags": [
+        "fast food",
+        "pizza"
+      ],
+      "brand": "Pizza Palace",
+      "sku": "FAS-PIZ-HAW-013",
+      "weight": 11,
+      "dimensions": {
+        "width": 30.0,
+        "height": 2.5,
+        "depth": 30.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 4,
+          "comment": "Love the sweet and savory combo!",
+          "date": "2025-09-10T22:00:00.000Z",
+          "reviewerName": "Evelyn Clark",
+          "reviewerEmail": "evelyn.clark@x.dummyjson.com"
+        },
+        {
+          "rating": 3,
+          "comment": "Pineapple on pizza is not for me.",
+          "date": "2025-09-12T00:00:00.000Z",
+          "reviewerName": "Oliver Davis",
+          "reviewerEmail": "oliver.davis@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Perfect balance of flavors!",
+          "date": "2025-09-12T21:00:00.000Z",
+          "reviewerName": "Ava Wilson",
+          "reviewerEmail": "ava.wilson@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-10T22:00:00.000Z",
+        "updatedAt": "2025-09-10T22:00:00.000Z",
+        "barcode": "1234567890135",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/HawaiianPizza3.jpg",
+        "assets/images/HawaiianPizza2.jpg",
+        "assets/images/HawaiianPizza1.jpg"
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2017/12/09/08/18/pizza-3007395_1280.jpg"
+    },
+    {
+      "id": 14,
+      "title": "Spicy Beef Taco",
+      "description": "A soft tortilla filled with seasoned beef, lettuce, cheese, salsa, and a spicy sauce.",
+      "category": "fast food",
+      "price": 4.99,
+      "discountPercentage": 8.0,
+      "rating": 4.2,
+      "stock": 160,
+      "tags": [
+        "fast food",
+        "taco"
+      ],
+      "brand": "Taco Time",
+      "sku": "FAS-TAC-BEE-014",
+      "weight": 5,
+      "dimensions": {
+        "width": 8.0,
+        "height": 4.0,
+        "depth": 8.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 4,
+          "comment": "Spicy and delicious!",
+          "date": "2025-09-10T23:00:00.000Z",
+          "reviewerName": "Mia Harris",
+          "reviewerEmail": "mia.harris@x.dummyjson.com"
+        },
+        {
+          "rating": 3,
+          "comment": "Too spicy for my taste.",
+          "date": "2025-09-12T01:00:00.000Z",
+          "reviewerName": "Lucas Brown",
+          "reviewerEmail": "lucas.brown@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Perfect taco!",
+          "date": "2025-09-12T22:00:00.000Z",
+          "reviewerName": "Emma Davis",
+          "reviewerEmail": "emma.davis@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-10T23:00:00.000Z",
+        "updatedAt": "2025-09-10T23:00:00.000Z",
+        "barcode": "1234567890136",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/SpicyBeefTaco2.jpg"
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2019/09/25/13/22/taco-4502927_1280.jpg"
+    },
+    {
+      "id": 15,
+      "title": "Onion Rings",
+      "description": "Crispy, golden onion rings, perfect as a side or snack.",
+      "category": "fast food",
+      "price": 4.49,
+      "discountPercentage": 6.0,
+      "rating": 4.1,
+      "stock": 180,
+      "tags": [
+        "fast food",
+        "sides"
+      ],
+      "brand": "Fry Factory",
+      "sku": "FAS-SID-ONR-015",
+      "weight": 4,
+      "dimensions": {
+        "width": 10.0,
+        "height": 5.0,
+        "depth": 10.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 4,
+          "comment": "Crispy and tasty!",
+          "date": "2025-09-11T00:00:00.000Z",
+          "reviewerName": "Noah Wilson",
+          "reviewerEmail": "noah.wilson@x.dummyjson.com"
+        },
+        {
+          "rating": 3,
+          "comment": "A bit greasy.",
+          "date": "2025-09-12T02:00:00.000Z",
+          "reviewerName": "Ava Taylor",
+          "reviewerEmail": "ava.taylor@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Love these onion rings!",
+          "date": "2025-09-12T23:00:00.000Z",
+          "reviewerName": "Liam Clark",
+          "reviewerEmail": "liam.clark@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-11T00:00:00.000Z",
+        "updatedAt": "2025-09-11T00:00:00.000Z",
+        "barcode": "1234567890137",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/OnionRings1.jpg"
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2018/08/14/13/23/onion-rings-3604378_1280.jpg"
+    },
+    {
+      "id": 16,
+      "title": "Grilled Chicken Wrap",
+      "description": "A flour tortilla filled with grilled chicken, lettuce, tomatoes, cheese, and ranch dressing.",
+      "category": "fast food",
+      "price": 6.99,
+      "discountPercentage": 7.0,
+      "rating": 4.3,
+      "stock": 120,
+      "tags": [
+        "fast food",
+        "wrap"
+      ],
+      "brand": "Wrap Works",
+      "sku": "FAS-WRA-CHI-016",
+      "weight": 6,
+      "dimensions": {
+        "width": 8.0,
+        "height": 4.0,
+        "depth": 8.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Healthy and delicious!",
+          "date": "2025-09-11T01:00:00.000Z",
+          "reviewerName": "Isabella Lee",
+          "reviewerEmail": "isabella.lee@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Good, but needs more chicken.",
+          "date": "2025-09-12T03:00:00.000Z",
+          "reviewerName": "James Scott",
+          "reviewerEmail": "james.scott@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Great for lunch!",
+          "date": "2025-09-13T00:00:00.000Z",
+          "reviewerName": "Sophia Adams",
+          "reviewerEmail": "sophia.adams@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-11T01:00:00.000Z",
+        "updatedAt": "2025-09-11T01:00:00.000Z",
+        "barcode": "1234567890138",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/GrilledChickenWrap1.jpg"
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2019/06/17/18/45/wrap-4280395_1280.jpg"
+    },
+    {
+      "id": 17,
+      "title": "Meat Lovers Pizza",
+      "description": "A hearty pizza loaded with pepperoni, sausage, bacon, and mozzarella cheese.",
+      "category": "fast food",
+      "price": 15.99,
+      "discountPercentage": 13.0,
+      "rating": 4.7,
+      "stock": 80,
+      "tags": [
+        "fast food",
+        "pizza"
+      ],
+      "brand": "Pizza Palace",
+      "sku": "FAS-PIZ-MEA-017",
+      "weight": 12,
+      "dimensions": {
+        "width": 30.0,
+        "height": 2.5,
+        "depth": 30.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Perfect for meat lovers!",
+          "date": "2025-09-11T02:00:00.000Z",
+          "reviewerName": "Ethan Wilson",
+          "reviewerEmail": "ethan.wilson@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Really meaty, but a bit heavy.",
+          "date": "2025-09-12T04:00:00.000Z",
+          "reviewerName": "Ava Brown",
+          "reviewerEmail": "ava.brown@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "So much flavor!",
+          "date": "2025-09-13T01:00:00.000Z",
+          "reviewerName": "Liam Turner",
+          "reviewerEmail": "liam.turner@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-11T02:00:00.000Z",
+        "updatedAt": "2025-09-11T02:00:00.000Z",
+        "barcode": "1234567890139",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/MeatLoversPizza2.jpg"
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2017/12/09/08/18/pizza-3007395_1280.jpg"
+    },
+    {
+      "id": 18,
+      "title": "Fish Sandwich",
+      "description": "A crispy fried fish fillet with lettuce, tartar sauce, and pickles on a soft bun.",
+      "category": "fast food",
+      "price": 7.99,
+      "discountPercentage": 9.0,
+      "rating": 4.2,
+      "stock": 110,
+      "tags": [
+        "fast food",
+        "fish"
+      ],
+      "brand": "Seafood Shack",
+      "sku": "FAS-FIS-SAN-018",
+      "weight": 7,
+      "dimensions": {
+        "width": 10.0,
+        "height": 7.5,
+        "depth": 10.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 4,
+          "comment": "Tasty fish sandwich!",
+          "date": "2025-09-11T03:00:00.000Z",
+          "reviewerName": "Chloe Davis",
+          "reviewerEmail": "chloe.davis@x.dummyjson.com"
+        },
+        {
+          "rating": 3,
+          "comment": "Fish was a bit bland.",
+          "date": "2025-09-12T05:00:00.000Z",
+          "reviewerName": "Noah Clark",
+          "reviewerEmail": "noah.clark@x.dummyjson.com"
+        },
+        {
+          "rating": 5,
+          "comment": "Great tartar sauce!",
+          "date": "2025-09-13T02:00:00.000Z",
+          "reviewerName": "Mia Wilson",
+          "reviewerEmail": "mia.wilson@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-11T03:00:00.000Z",
+        "updatedAt": "2025-09-11T03:00:00.000Z",
+        "barcode": "1234567890140",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/FishSandwich1.png"
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2019/11/14/17/29/fish-sandwich-4626156_1280.jpg"
+    },
+    {
+      "id": 19,
+      "title": "Chicken Quesadilla",
+      "description": "A flour tortilla filled with grilled chicken, melted cheese, and salsa, grilled to perfection.",
+      "category": "fast food",
+      "price": 6.99,
+      "discountPercentage": 8.0,
+      "rating": 4.4,
+      "stock": 130,
+      "tags": [
+        "fast food",
+        "quesadilla"
+      ],
+      "brand": "Taco Time",
+      "sku": "FAS-QUE-CHI-019",
+      "weight": 6,
+      "dimensions": {
+        "width": 10.0,
+        "height": 3.0,
+        "depth": 10.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Cheesy and delicious!",
+          "date": "2025-09-11T04:00:00.000Z",
+          "reviewerName": "Evelyn Turner",
+          "reviewerEmail": "evelyn.turner@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Good, but needs more salsa.",
+          "date": "2025-09-12T06:00:00.000Z",
+          "reviewerName": "Lucas Harris",
+          "reviewerEmail": "lucas.harris@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Great quick meal!",
+          "date": "2025-09-13T03:00:00.000Z",
+          "reviewerName": "Ava Scott",
+          "reviewerEmail": "ava.scott@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-11T04:00:00.000Z",
+        "updatedAt": "2025-09-11T04:00:00.000Z",
+        "barcode": "1234567890141",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/ChickenQuesadilla3.webp",
+        "assets/images/ChickenQuesadilla2.jpg",
+        "assets/images/ChickenQuesadilla1.jpg"
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2018/07/12/17/36/quesadilla-3534066_1280.jpg"
+    },
+    {
+      "id": 20,
+      "title": "Mozzarella Sticks",
+      "description": "Crispy breaded mozzarella sticks served with marinara sauce for dipping.",
+      "category": "fast food",
+      "price": 5.49,
+      "discountPercentage": 7.0,
+      "rating": 4.3,
+      "stock": 150,
+      "tags": [
+        "fast food",
+        "sides"
+      ],
+      "brand": "Fry Factory",
+      "sku": "FAS-SID-MOZ-020",
+      "weight": 5,
+      "dimensions": {
+        "width": 10.0,
+        "height": 5.0,
+        "depth": 10.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "So cheesy and delicious!",
+          "date": "2025-09-11T05:00:00.000Z",
+          "reviewerName": "Lily Clark",
+          "reviewerEmail": "lily.clark@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Great, but a bit oily.",
+          "date": "2025-09-12T07:00:00.000Z",
+          "reviewerName": "Noah Turner",
+          "reviewerEmail": "noah.turner@x.dummyjson.com"
+        },
+        {
+          "rating": 4,
+          "comment": "Perfect appetizer!",
+          "date": "2025-09-13T04:00:00.000Z",
+          "reviewerName": "Emma Wilson",
+          "reviewerEmail": "emma.wilson@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-11T05:00:00.000Z",
+        "updatedAt": "2025-09-11T05:00:00.000Z",
+        "barcode": "1234567890142",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/MozzarellaSticks1.png"
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2017/01/06/17/49/mozzarella-sticks-1959283_1280.jpg"
+    }
+  ],
+  "total": 20,
+  "skip": 0,
+  "limit": 20
+}
