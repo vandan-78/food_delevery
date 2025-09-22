@@ -115,7 +115,7 @@ class ProductNotifier extends StateNotifier<ProductState> {
     try{
       state = state.copyWith(isLoading: true);
       final result = await _repo.fetchProductData();
-      state = state.copyWith(productResponse: result, isLoading: false);
+      state = state.copyWith(products: result, isLoading: false);
 
 
     }catch(e){

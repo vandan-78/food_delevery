@@ -30,7 +30,7 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
     final size = MediaQuery.sizeOf(context);
     final theme = Theme.of(context);
 
-    final products = state.productResponse?.products.where((product) {
+    final products = state.products?.where((product) {
       return state.favoriteItems.contains(product.id.toString());
     }).toList().reversed.toList() ?? [];
 

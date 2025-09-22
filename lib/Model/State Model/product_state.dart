@@ -2,14 +2,14 @@ import 'package:mvvm_folder_strucutre/Model/cart_item_model.dart';
 import 'package:mvvm_folder_strucutre/Model/product_model.dart';
 
 class ProductState {
-  final ProductResponse? productResponse;
+  final List<Product>? products;
   final bool isLoading;
   final String? error;
   final List<String> favoriteItems;
   final List<CartItem> cartItems;
   final double cartTotal;
   ProductState({
-    this.productResponse,
+    this.products = const [],
     this.isLoading = false,
     this.error,
     this.favoriteItems = const [],
@@ -19,7 +19,7 @@ class ProductState {
 
 
   ProductState copyWith({
-    ProductResponse? productResponse,
+    List<Product>? products,
     bool? isLoading,
     String? error,
     List<String>? favoriteItems,
@@ -27,7 +27,7 @@ class ProductState {
     double? cartTotal
   }) {
     return ProductState(
-      productResponse: productResponse ?? this.productResponse,
+      products: products ?? this.products,
       isLoading: isLoading ?? this.isLoading,
       error: error ?? this.error,
       favoriteItems: favoriteItems ?? this.favoriteItems,

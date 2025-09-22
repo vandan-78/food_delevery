@@ -8,7 +8,7 @@ import '../Core/Routes/routes_name.dart';
 import '../Core/Util/utils.dart';
 import '../Model/product_model.dart';
 import '../Core/theme/app_colors.dart';
-import '../Core/theme/text_styles.dart';
+
 
 class CartScreen extends ConsumerStatefulWidget {
   const CartScreen({super.key});
@@ -74,11 +74,11 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       'name': 'Foodie App',
       'description': 'Cart Payment',
       'prefill': {
-        'contact': '9999999999',
-        'email': 'test@example.com',
+        'contact': '9927845706',
+        'email': 'dhrumil@example.com',
       },
       'theme': {
-        'color': Theme.of(context).primaryColor.value.toRadixString(16).substring(2)
+        'color': Theme.of(context).primaryColor
       }
     };
 

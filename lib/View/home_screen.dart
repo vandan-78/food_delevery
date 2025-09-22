@@ -196,7 +196,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       );
     }
 
-    final products = state.productResponse?.products ?? [];
+    final products = state.products ?? [];
     final filteredProducts = searchController.text.isEmpty
         ? products
         : products.where((product) {

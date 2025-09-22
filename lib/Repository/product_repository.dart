@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mvvm_folder_strucutre/Model/product_model.dart';
@@ -7,20 +8,22 @@ import '../Core/Config/app_urls.dart';
 import '../Data/Network/network_api_service.dart';
 
 class ProductRepository {
-  // final _apiService = NetworkApiService();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<ProductResponse> fetchProductData() async {
-    try{
-      // final response = await _apiService.getApiResponse(AppUrl.dummyJsonProduct);
-      // debugPrint("Product Data: ${ProductResponse.fromJson(response)}");
-      String jsonString = await rootBundle.loadString('assets/fast_food_products.json');
-      final data = json.decode(jsonString);
-      return ProductResponse.fromJson(data);
+  Future<List<Product>> fetchProductData() async {
+    try {
+      final snapshot = await _firestore
+          .collection('products')
+          .orderBy('id') // ✅ ensures proper numeric order
+          .get();
 
-    }catch(e){
-      rethrow;
+      final products = snapshot.docs
+          .map((doc) => Product.fromJson(doc.data()))
+          .toList();
+
+      return products;
+    } catch (e) {
+      throw Exception("Error fetching products: $e");
     }
   }
-
-
 }
