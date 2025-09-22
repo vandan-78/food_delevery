@@ -9,7 +9,10 @@ class PrivacyPolicyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Privacy Policy', style: TextStyles.headlineMedium),
+        iconTheme: IconThemeData(
+          color: Colors.black
+        ),
+        title: Text('Privacy Policy', style: TextStyles.headlineMedium.copyWith(fontSize: 24)),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
@@ -28,7 +31,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
             const SizedBox(height: 20),
             Text(
               'Privacy Policy',
-              style: TextStyles.headlineSmall,
+              style: TextStyles.headlineSmall.copyWith(fontSize: 20),
             ),
             const SizedBox(height: 10),
             Text(

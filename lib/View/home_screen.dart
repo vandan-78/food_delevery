@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mvvm_folder_strucutre/Core/Routes/routes_name.dart';
 import 'package:mvvm_folder_strucutre/Core/Theme/app_colors.dart';
 import 'package:mvvm_folder_strucutre/Core/Theme/text_styles.dart';
-import 'package:mvvm_folder_strucutre/View-Model/auth_view_model.dart';
-import 'package:mvvm_folder_strucutre/View/favorite_screen.dart';
 import 'package:mvvm_folder_strucutre/View/pre_home_screen.dart';
 import 'package:mvvm_folder_strucutre/View/product_detail_screen.dart';
 import '../Model/State Model/product_state.dart';
 import '../Model/product_model.dart';
 import '../View-Model/product_view_model.dart';
+import '../View-Model/theme_view_model.dart';
 
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
@@ -33,7 +32,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     {'name': 'Drinks', 'icon': Icons.local_drink, 'count': 9},
   ];
 
-  final  banners = [
+  final banners = [
     "assets/images/banner1.jpg",
     "assets/images/banner2.jpg",
     "assets/images/banner3.jpg"
@@ -77,6 +76,60 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
 
+  Future<bool?> _showExitDialog(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: isDark ? AppColors.backgroundDark : Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Text(
+            "Exit App",
+            style: theme.textTheme.titleLarge?.copyWith(
+              color: isDark ? AppColors.textDark : AppColors.textSecondary,
+            ),
+          ),
+          content: Text(
+            "Are you sure you want to exit the app?",
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: isDark ? AppColors.textDark : AppColors.textSecondary,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text(
+                "Cancel",
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: isDark ? AppColors.textDark : AppColors.textSecondary,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop(false); // close dialog
+                SystemNavigator.pop(); // ✅ closes the app
+                // Or: exit(0); (not recommended)
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: theme.primaryColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text("Exit"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
+
   @override
   void dispose() {
     _scrollController.dispose();
@@ -87,11 +140,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(productProvider);
+    final themeMode = ref.watch(themeProvider);
+    final isDarkMode = themeMode == ThemeMode.dark;
     final size = MediaQuery.sizeOf(context);
 
     if (state.isLoading) {
       return Scaffold(
-        backgroundColor: AppColors.backgroundLight,
+        backgroundColor: isDarkMode ? AppColors.backgroundDark : AppColors.backgroundLight,
         body: Center(
           child: CircularProgressIndicator(
             strokeWidth: 3,
@@ -103,21 +158,25 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     if (state.error != null) {
       return Scaffold(
-        backgroundColor: AppColors.backgroundLight,
+        backgroundColor: isDarkMode ? AppColors.backgroundDark : AppColors.backgroundLight,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.error_outline, size: 48, color: AppColors.gray400),
+              Icon(Icons.error_outline, size: 48, color: isDarkMode ? AppColors.gray400 : AppColors.gray600),
               const SizedBox(height: 16),
               Text(
                 "Something went wrong",
-                style: TextStyles.bodyLarge.copyWith(color: AppColors.textSecondary),
+                style: TextStyles.bodyLarge.copyWith(
+                  color: isDarkMode ? AppColors.textDark : AppColors.textSecondary,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
                 "Error: ${state.error}",
-                style: TextStyles.bodyMedium.copyWith(color: AppColors.textTertiary),
+                style: TextStyles.bodyMedium.copyWith(
+                  color: isDarkMode ? AppColors.gray400 : AppColors.textTertiary,
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),
@@ -144,57 +203,66 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       return product.title.toLowerCase().contains(searchController.text.toLowerCase());
     }).toList();
 
-    return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
-      body: RefreshIndicator(
-        onRefresh: () async {
-          ref.read(productProvider.notifier).fetchProducts();
-        },
-        child: CustomScrollView(
-          controller: _scrollController,
-          physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
-          slivers: [
-            // Custom App Bar
-            _buildCustomAppBar(size, state),
+    return WillPopScope(
+      onWillPop: () async {
+        final shouldExit = await _showExitDialog(context);
+        return shouldExit ?? false; // if null → default to false
+      },
 
-            // Banner Slider
-            _buildBannerSlider(),
+      child: Scaffold(
+        backgroundColor: isDarkMode ? AppColors.backgroundDark : AppColors.backgroundLight,
+        body: RefreshIndicator(
+          onRefresh: () async {
+            ref.read(productProvider.notifier).fetchProducts();
+          },
+          color: AppColors.orange,
+          child: CustomScrollView(
+            controller: _scrollController,
+            physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
+            slivers: [
+              // Custom App Bar
+              _buildCustomAppBar(size, state, isDarkMode),
 
-            // Categories Section
-            _buildCategoriesSection(),
+              // Banner Slider
+              _buildBannerSlider(isDarkMode),
 
-            // Featured Restaurants Header
-            _buildFeaturedHeader(),
+              // Categories Section
+              _buildCategoriesSection(isDarkMode),
 
-            // Featured Restaurants
-            _buildFeaturedRestaurants(),
+              // Featured Restaurants Header
+              _buildFeaturedHeader(isDarkMode),
 
-            // Popular Items Header
-            _buildPopularItemsHeader(filteredProducts.length),
+              // Featured Restaurants
+              _buildFeaturedRestaurants(isDarkMode),
 
-            // Products Grid
-            _buildProductsGrid(filteredProducts, state),
-          ],
+              // Popular Items Header
+              _buildPopularItemsHeader(filteredProducts.length, isDarkMode),
+
+              // Products Grid
+              _buildProductsGrid(filteredProducts, state, isDarkMode),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  SliverAppBar _buildCustomAppBar(Size size, ProductState state) {
+  SliverAppBar _buildCustomAppBar(Size size, ProductState state, bool isDarkMode) {
     return SliverAppBar(
+      automaticallyImplyLeading: false,
       floating: true,
       pinned: true,
       snap: true,
       expandedHeight: 190,
-      backgroundColor: Colors.white,
-      surfaceTintColor: Colors.white,
+      backgroundColor: isDarkMode ? AppColors.gray800 : Colors.white,
+      surfaceTintColor: isDarkMode ? AppColors.gray800 : Colors.white,
       flexibleSpace: FlexibleSpaceBar(
         background: Container(
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: isDarkMode ? AppColors.gray800 : Colors.white,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withOpacity(isDarkMode ? 0.3 : 0.05),
                 blurRadius: 8,
                 offset: const Offset(0, 2),
               ),
@@ -211,7 +279,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   children: [
                     Text(
                       getGreeting(),
-                      style: TextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+                      style: TextStyles.bodyMedium.copyWith(
+                        color: isDarkMode ? AppColors.gray400 : AppColors.textSecondary,
+                      ),
                     ),
                     const SizedBox(height: 4),
                     Row(
@@ -220,7 +290,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         const SizedBox(width: 4),
                         Text(
                           'New York, NY',
-                          style: TextStyles.titleSmall.copyWith(color: AppColors.textPrimary,fontSize: 20),
+                          style: TextStyles.titleSmall.copyWith(
+                            color: isDarkMode ? AppColors.textDark : AppColors.textPrimary,
+                            fontSize: 18,
+                          ),
                         ),
                       ],
                     ),
@@ -232,7 +305,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               Stack(
                 children: [
                   IconButton(
-                    icon: Icon(Icons.shopping_cart_outlined, size: 28, color: AppColors.textPrimary),
+                    icon: Icon(Icons.shopping_cart_outlined, size: 26,
+                        color: isDarkMode ? AppColors.textDark : AppColors.textPrimary),
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -242,15 +316,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                   if (state.cartItems.isNotEmpty)
                     Positioned(
-                      top: 0,
-                      right: 0,
+                      top: 5,
+                      right: 5,
                       child: Container(
-                        width: 18,
-                        height: 18,
+                        width: 16,
+                        height: 16,
                         decoration: BoxDecoration(
                           color: AppColors.error,
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 1.5),
+                          border: Border.all(color: isDarkMode ? AppColors.gray800 : Colors.white, width: 1),
                         ),
                         child: Center(
                           child: Text(
@@ -258,6 +332,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             style: TextStyles.labelSmall.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
+                              fontSize: 10,
                             ),
                           ),
                         ),
@@ -270,7 +345,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               Stack(
                 children: [
                   IconButton(
-                    icon: Icon(Icons.favorite_outline, size: 28, color: AppColors.textPrimary),
+                    icon: Icon(Icons.favorite_outline, size: 26,
+                        color: isDarkMode ? AppColors.textDark : AppColors.textPrimary),
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -280,15 +356,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ),
                   if (state.favoriteItems.isNotEmpty)
                     Positioned(
-                      top: 0,
-                      right: 0,
+                      top: 5,
+                      right: 5,
                       child: Container(
-                        width: 18,
-                        height: 18,
+                        width: 16,
+                        height: 16,
                         decoration: BoxDecoration(
                           color: AppColors.error,
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 1.5),
+                          border: Border.all(color: isDarkMode ? AppColors.gray800 : Colors.white, width: 1),
                         ),
                         child: Center(
                           child: Text(
@@ -296,6 +372,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             style: TextStyles.labelSmall.copyWith(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
+                              fontSize: 10,
                             ),
                           ),
                         ),
@@ -311,15 +388,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         preferredSize: const Size.fromHeight(70),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-          color: Colors.white,
+          color: isDarkMode ? AppColors.gray800 : Colors.white,
           child: Container(
             height: 50,
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: isDarkMode ? AppColors.gray700 : Colors.white,
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
+                  color: Colors.black.withOpacity(isDarkMode ? 0.2 : 0.08),
                   blurRadius: 4,
                   offset: const Offset(0, 0),
                 ),
@@ -327,30 +404,36 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             child: TextField(
               controller: searchController,
+              style: TextStyles.bodyMedium.copyWith(
+                color: isDarkMode ? AppColors.textDark : AppColors.textPrimary,
+              ),
               decoration: InputDecoration(
                 hintText: 'Search for food, restaurants...',
-                hintStyle: TextStyles.bodyMedium.copyWith(color: AppColors.textTertiary),
+                hintStyle: TextStyles.bodyMedium.copyWith(
+                  color: isDarkMode ? AppColors.gray400 : AppColors.textTertiary,
+                ),
                 prefixIcon: Icon(Icons.search, color: AppColors.orange, size: 22),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(
-                    color: Colors.grey.shade200,
-                    width: 1.2
-                  )
+                    color: isDarkMode ? AppColors.gray600 : Colors.grey.shade200,
+                    width: 1.2,
+                  ),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide(
-                        color: Colors.grey.shade200,
-                        width: 1.5
-                    )                ),
+                  borderSide: BorderSide(
+                    color: isDarkMode ? AppColors.gray600 : Colors.grey.shade200,
+                    width: 1.5,
+                  ),
+                ),
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(color: AppColors.orange, width: 1.5),
                 ),
                 contentPadding: const EdgeInsets.symmetric(vertical: 13),
                 filled: true,
-                fillColor: AppColors.gray50,
+                fillColor: isDarkMode ? AppColors.gray600 : AppColors.gray50,
               ),
               onChanged: (value) {
                 setState(() {});
@@ -362,7 +445,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  SliverToBoxAdapter _buildBannerSlider() {
+  SliverToBoxAdapter _buildBannerSlider(bool isDarkMode) {
     return SliverToBoxAdapter(
       child: Container(
         height: 160,
@@ -371,7 +454,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withOpacity(isDarkMode ? 0.4 : 0.1),
               blurRadius: 15,
               offset: const Offset(0, 5),
             ),
@@ -382,28 +465,26 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           child: Stack(
             children: [
               // Banner Image
-
-          AnimatedSwitcher(
-          duration: const Duration(milliseconds: 500),
-          child: Image.asset(
-            banners[_currentBannerIndex], // pick current banner
-            key: ValueKey<int>(_currentBannerIndex), // important for animation
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-            errorBuilder: (context, error, stackTrace) => Container(
-              color: AppColors.gray200,
-              child: Center(
-                child: Icon(
-                  Icons.fastfood,
-                  size: 60,
-                  color: AppColors.gray400,
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 500),
+                child: Image.asset(
+                  banners[_currentBannerIndex],
+                  key: ValueKey<int>(_currentBannerIndex),
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    color: isDarkMode ? AppColors.gray700 : AppColors.gray200,
+                    child: Center(
+                      child: Icon(
+                        Icons.fastfood,
+                        size: 60,
+                        color: isDarkMode ? AppColors.gray500 : AppColors.gray400,
+                      ),
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
-        ),
-
 
               // Gradient Overlay
               Container(
@@ -467,7 +548,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  SliverToBoxAdapter _buildCategoriesSection() {
+  SliverToBoxAdapter _buildCategoriesSection(bool isDarkMode) {
     return SliverToBoxAdapter(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -476,7 +557,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: Text(
               'Categories',
-              style: TextStyles.headlineSmall,
+              style: TextStyles.headlineSmall.copyWith(
+                color: isDarkMode ? AppColors.textDark : AppColors.textPrimary,
+              ),
             ),
           ),
           SizedBox(
@@ -500,15 +583,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     width: 80,
                     margin: const EdgeInsets.only(right: 12),
                     decoration: BoxDecoration(
-                      color: isSelected ? AppColors.orangeLight : Colors.white,
+                      color: isSelected
+                          ? AppColors.orangeLight
+                          : isDarkMode ? AppColors.gray700 : Colors.white,
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(
-                        color: isSelected ? AppColors.orange : AppColors.gray300,
+                        color: isSelected
+                            ? AppColors.orange
+                            : isDarkMode ? AppColors.gray600 : AppColors.gray300,
                         width: isSelected ? 1.5 : 1,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withOpacity(isDarkMode ? 0.2 : 0.05),
                           blurRadius: 8,
                           offset: const Offset(0, 3),
                         ),
@@ -521,7 +608,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           width: 40,
                           height: 40,
                           decoration: BoxDecoration(
-                            color: isSelected ? AppColors.orange : AppColors.gray100,
+                            color: isSelected ? AppColors.orange :
+                            isDarkMode ? AppColors.gray600 : AppColors.gray100,
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
@@ -534,7 +622,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         Text(
                           category['name'] as String,
                           style: TextStyles.labelMedium.copyWith(
-                            color: isSelected ? AppColors.orange : AppColors.textPrimary,
+                            color: isSelected
+                                ? AppColors.orange
+                                : isDarkMode ? AppColors.textDark : AppColors.textPrimary,
                             fontWeight: FontWeight.w600,
                           ),
                           textAlign: TextAlign.center,
@@ -553,7 +643,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  SliverToBoxAdapter _buildFeaturedHeader() {
+  SliverToBoxAdapter _buildFeaturedHeader(bool isDarkMode) {
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -561,7 +651,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           children: [
             Text(
               'Featured Restaurants',
-              style: TextStyles.headlineSmall,
+              style: TextStyles.headlineSmall.copyWith(
+                color: isDarkMode ? AppColors.textDark : AppColors.textPrimary,
+              ),
             ),
             const Spacer(),
             Text(
@@ -577,7 +669,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  SliverToBoxAdapter _buildFeaturedRestaurants() {
+  SliverToBoxAdapter _buildFeaturedRestaurants(bool isDarkMode) {
     final featuredRestaurants = [
       {'name': 'Pizza Paradise', 'rating': 4.8, 'image': 'https://images.unsplash.com/photo-1513104890138-7c749659a591'},
       {'name': 'Burger King', 'rating': 4.5, 'image': 'https://images.unsplash.com/photo-1571091718767-18b5b1457add'},
@@ -597,11 +689,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               width: 280,
               margin: const EdgeInsets.only(right: 16),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDarkMode ? AppColors.gray700 : Colors.white,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withOpacity(isDarkMode ? 0.3 : 0.1),
                     blurRadius: 8,
                     offset: const Offset(0, 3),
                   ),
@@ -618,8 +710,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => Container(
                         width: 100,
-                        color: AppColors.gray200,
-                        child: Icon(Icons.restaurant, color: AppColors.gray400),
+                        color: isDarkMode ? AppColors.gray600 : AppColors.gray200,
+                        child: Icon(Icons.restaurant,
+                            color: isDarkMode ? AppColors.gray400 : AppColors.gray400),
                       ),
                     ),
                   ),
@@ -632,7 +725,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         children: [
                           Text(
                             restaurant['name'] as String,
-                            style: TextStyles.titleSmall.copyWith(fontWeight: FontWeight.w600),
+                            style: TextStyles.titleSmall.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: isDarkMode ? AppColors.textDark : AppColors.textPrimary,
+                            ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -643,14 +739,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               const SizedBox(width: 4),
                               Text(
                                 restaurant['rating'].toString(),
-                                style: TextStyles.bodySmall,
+                                style: TextStyles.bodySmall.copyWith(
+                                  color: isDarkMode ? AppColors.textDark : AppColors.textPrimary,
+                                ),
                               ),
                             ],
                           ),
                           const SizedBox(height: 4),
                           Text(
                             '30-45 min • Free delivery',
-                            style: TextStyles.bodySmall.copyWith(color: AppColors.textSecondary),
+                            style: TextStyles.bodySmall.copyWith(
+                              color: isDarkMode ? AppColors.gray400 : AppColors.textSecondary,
+                            ),
                           ),
                         ],
                       ),
@@ -665,7 +765,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  SliverToBoxAdapter _buildPopularItemsHeader(int productCount) {
+  SliverToBoxAdapter _buildPopularItemsHeader(int productCount, bool isDarkMode) {
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -673,12 +773,16 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           children: [
             Text(
               'Popular Items',
-              style: TextStyles.headlineSmall,
+              style: TextStyles.headlineSmall.copyWith(
+                color: isDarkMode ? AppColors.textDark : AppColors.textPrimary,
+              ),
             ),
             const Spacer(),
             Text(
               '$productCount items',
-              style: TextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+              style: TextStyles.bodyMedium.copyWith(
+                color: isDarkMode ? AppColors.gray400 : AppColors.textSecondary,
+              ),
             ),
           ],
         ),
@@ -686,7 +790,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 
-  SliverGrid _buildProductsGrid(List<Product> filteredProducts, ProductState state) {
+  SliverGrid _buildProductsGrid(List<Product> filteredProducts, ProductState state, bool isDarkMode) {
     if (filteredProducts.isEmpty) {
       return SliverGrid(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 1),
@@ -695,16 +799,21 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.search_off, size: 60, color: AppColors.gray300),
+                Icon(Icons.search_off, size: 60,
+                    color: isDarkMode ? AppColors.gray500 : AppColors.gray300),
                 const SizedBox(height: 16),
                 Text(
                   'No food items found',
-                  style: TextStyles.bodyLarge.copyWith(color: AppColors.textSecondary),
+                  style: TextStyles.bodyLarge.copyWith(
+                    color: isDarkMode ? AppColors.textDark : AppColors.textSecondary,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Text(
                   'Try a different search term',
-                  style: TextStyles.bodyMedium.copyWith(color: AppColors.textTertiary),
+                  style: TextStyles.bodyMedium.copyWith(
+                    color: isDarkMode ? AppColors.gray400 : AppColors.textTertiary,
+                  ),
                 ),
               ],
             ),
@@ -718,7 +827,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         crossAxisCount: 2,
         crossAxisSpacing: 16,
         mainAxisSpacing: 16,
-        childAspectRatio: 0.5,
+        childAspectRatio: 0.55,
       ),
       delegate: SliverChildBuilderDelegate((context, index) {
         final product = filteredProducts[index];
@@ -727,7 +836,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             left: index % 2 == 0 ? 16.0 : 0.0,
             right: index % 2 != 0 ? 16.0 : 0.0,
           ),
-          child: FoodItemCard(product: product, ref: ref, productState: state),
+          child: FoodItemCard(
+            product: product,
+            ref: ref,
+            productState: state,
+            isDarkMode: isDarkMode,
+          ),
         );
       }, childCount: filteredProducts.length),
     );
@@ -738,12 +852,14 @@ class FoodItemCard extends StatelessWidget {
   final Product product;
   final WidgetRef ref;
   final ProductState productState;
+  final bool isDarkMode;
 
   const FoodItemCard({
     super.key,
     required this.product,
     required this.ref,
     required this.productState,
+    required this.isDarkMode,
   });
 
   @override
@@ -760,11 +876,11 @@ class FoodItemCard extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: isDarkMode ? AppColors.gray700 : Colors.white,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withOpacity(isDarkMode ? 0.3 : 0.1),
               blurRadius: 8,
               offset: const Offset(0, 3),
             ),
@@ -778,11 +894,11 @@ class FoodItemCard extends StatelessWidget {
               children: [
                 // Food Image
                 Container(
-                  height: 175,
+                  height: 160,
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
-                    color: AppColors.gray100,
+                    color: isDarkMode ? AppColors.gray600 : AppColors.gray100,
                   ),
                   child: ClipRRect(
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
@@ -792,7 +908,7 @@ class FoodItemCard extends StatelessWidget {
                       errorBuilder: (context, error, stackTrace) => Center(
                         child: Icon(
                           Icons.fastfood,
-                          color: AppColors.gray400,
+                          color: isDarkMode ? AppColors.gray400 : AppColors.gray400,
                           size: 40,
                         ),
                       ),
@@ -833,11 +949,11 @@ class FoodItemCard extends StatelessWidget {
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: isDarkMode ? AppColors.gray700 : Colors.white,
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: Colors.black.withOpacity(isDarkMode ? 0.3 : 0.1),
                             blurRadius: 6,
                             offset: const Offset(0, 2),
                           ),
@@ -849,7 +965,7 @@ class FoodItemCard extends StatelessWidget {
                             : Icons.favorite_border,
                         color: productState.favoriteItems.contains(product.id.toString())
                             ? AppColors.error
-                            : AppColors.textSecondary,
+                            : isDarkMode ? AppColors.gray300 : AppColors.textSecondary,
                         size: 20,
                       ),
                     ),
@@ -858,21 +974,26 @@ class FoodItemCard extends StatelessWidget {
               ],
             ),
 
-            // Food Details
-            Padding(
+            // Food Details with fixed height container
+            Container(
+              height: 180,
               padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Title
-                  Text(
-                    product.title,
-                    style: TextStyles.titleSmall.copyWith(
-                      fontWeight: FontWeight.w600,
-                      height: 1.2,
+                  // Title with fixed height
+                  SizedBox(
+                    height: 40,
+                    child: Text(
+                      product.title,
+                      style: TextStyles.titleSmall.copyWith(
+                        fontWeight: FontWeight.w600,
+                        height: 1.2,
+                        color: isDarkMode ? AppColors.textDark : AppColors.textPrimary,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
                   ),
 
                   const SizedBox(height: 4),
@@ -884,9 +1005,11 @@ class FoodItemCard extends StatelessWidget {
                       color: AppColors.orange,
                       fontWeight: FontWeight.w600,
                     ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
 
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 4),
 
                   // Rating and Price
                   Row(
@@ -899,7 +1022,10 @@ class FoodItemCard extends StatelessWidget {
                           const SizedBox(width: 4),
                           Text(
                             product.rating.toStringAsFixed(1),
-                            style: TextStyles.bodySmall.copyWith(fontWeight: FontWeight.w600),
+                            style: TextStyles.bodySmall.copyWith(
+                              fontWeight: FontWeight.w600,
+                              color: isDarkMode ? AppColors.textDark : AppColors.textPrimary,
+                            ),
                           ),
                         ],
                       ),
@@ -919,7 +1045,7 @@ class FoodItemCard extends StatelessWidget {
                             Text(
                               '\$${originalPrice.toStringAsFixed(2)}',
                               style: TextStyles.bodySmall.copyWith(
-                                color: AppColors.textTertiary,
+                                color: isDarkMode ? AppColors.gray400 : AppColors.textTertiary,
                                 decoration: TextDecoration.lineThrough,
                               ),
                             ),
@@ -928,14 +1054,14 @@ class FoodItemCard extends StatelessWidget {
                     ],
                   ),
 
-                  const SizedBox(height: 8),
+                  const Spacer(),
 
                   // Add to Cart Button
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        ref.read(productProvider.notifier).addToCart(product,1);
+                        ref.read(productProvider.notifier).addToCart(product, 1);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.orange,

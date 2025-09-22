@@ -23,7 +23,6 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   @override
   void initState() {
     super.initState();
-    // Auto-scroll images if there are multiple
     if (widget.product.images.length > 1) {
       _startAutoScroll();
     }
@@ -56,10 +55,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(productProvider);
     final product = widget.product;
+    final theme = Theme.of(context);
     final size = MediaQuery.sizeOf(context);
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         top: false,
         child: CustomScrollView(
@@ -73,7 +73,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
               leading: Padding(
                 padding: const EdgeInsets.only(left: 16.0),
                 child: IconButton(
-                  icon: const Icon(Icons.arrow_back_ios, color: Colors.white, size: 25),
+                  icon: Icon(
+                      Icons.arrow_back_ios,
+                      color: theme.appBarTheme.iconTheme?.color ?? AppColors.textPrimary,
+                      size: 25
+                  ),
                   onPressed: () => Navigator.pop(context),
                 ),
               ),
@@ -88,7 +92,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       height: 40,
                       width: 40,
                       decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.6),
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.white.withOpacity(0.2)
+                            : Colors.black.withOpacity(0.6),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(
@@ -102,11 +108,9 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       ),
                     ),
                   ),
-                )
+                ),
               ],
-              flexibleSpace: FlexibleSpaceBar(
-                background: _buildImageCarousel(product),
-              ),
+              flexibleSpace: FlexibleSpaceBar(background: _buildImageCarousel(product, theme)),
             ),
 
             // Product Details
@@ -140,6 +144,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       style: TextStyles.headlineMedium.copyWith(
                         fontWeight: FontWeight.w700,
                         height: 1.2,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
 
@@ -156,6 +161,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                               product.rating.toStringAsFixed(1),
                               style: TextStyles.bodyMedium.copyWith(
                                 fontWeight: FontWeight.w600,
+                                color: theme.colorScheme.onSurface,
                               ),
                             ),
                           ],
@@ -175,7 +181,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                     const SizedBox(height: 16),
 
                     // Price Section
-                    _buildPriceSection(product),
+                    _buildPriceSection(product, theme),
 
                     const SizedBox(height: 20),
 
@@ -184,6 +190,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                       'Description',
                       style: TextStyles.titleMedium.copyWith(
                         fontWeight: FontWeight.w600,
+                        color: theme.colorScheme.onSurface,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -196,24 +203,14 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                     ),
 
                     const SizedBox(height: 20),
-                    //
-                    // // Ingredients (for food items)
-                    // _buildIngredientsSection(),
-                    //
-                    // const SizedBox(height: 20),
 
                     // Nutritional Information
-                    _buildNutritionalInfo(),
-
-                    // const SizedBox(height: 20),
-                    //
-                    // // Allergen Information
-                    // _buildAllergenInfo(),
+                    _buildNutritionalInfo(theme),
 
                     const SizedBox(height: 20),
 
                     // Reviews Section
-                    _buildReviewsSection(product),
+                    _buildReviewsSection(product, theme),
 
                     const SizedBox(height: 80),
                   ],
@@ -225,11 +222,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
       ),
 
       // Bottom Action Bar
-      bottomSheet: _buildBottomActionBar(product, ref, _quantity),
+      bottomSheet: _buildBottomActionBar(product, ref, _quantity, theme),
     );
   }
 
-  Widget _buildImageCarousel(Product product) {
+  Widget _buildImageCarousel(Product product, ThemeData theme) {
     return Stack(
       children: [
         PageView.builder(
@@ -248,7 +245,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   end: Alignment.bottomCenter,
                   colors: [
                     Colors.black.withOpacity(0.3),
-                    Colors.black.withOpacity(0.1),
+                    Colors.black.withOpacity(0.1)
                   ],
                 ),
               ),
@@ -257,7 +254,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) => Container(
                   color: AppColors.gray200,
-                  child: Icon(Icons.fastfood, size: 50, color: AppColors.gray400),
+                  child: Icon(
+                      Icons.fastfood,
+                      size: 50,
+                      color: AppColors.gray400
+                  ),
                 ),
               ),
             );
@@ -309,7 +310,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     );
   }
 
-  Widget _buildPriceSection(Product product) {
+  Widget _buildPriceSection(Product product, ThemeData theme) {
     final hasDiscount = product.discountPercentage > 0;
     final originalPrice = product.price + (product.price * product.discountPercentage / 100);
 
@@ -322,7 +323,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
               '\$${product.price.toStringAsFixed(2)}',
               style: TextStyles.headlineMedium.copyWith(
                 fontWeight: FontWeight.bold,
-                color: AppColors.textPrimary,
+                color: theme.colorScheme.onSurface,
               ),
             ),
             if (hasDiscount) ...[
@@ -358,72 +359,25 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
         const SizedBox(height: 8),
         Text(
           'Inclusive of all taxes',
-          style: TextStyles.bodySmall.copyWith(
-            color: AppColors.success,
-          ),
+          style: TextStyles.bodySmall.copyWith(color: AppColors.success),
         ),
       ],
     );
   }
 
-  Widget _buildIngredientsSection() {
-    // Sample ingredients for food items
-    final ingredients = [
-      'Fresh tomatoes',
-      'Mozzarella cheese',
-      'Basil leaves',
-      'Olive oil',
-      'Garlic',
-      'Salt & pepper'
-    ];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Ingredients',
-          style: TextStyles.titleMedium.copyWith(
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        const SizedBox(height: 8),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: ingredients.map((ingredient) {
-            return Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: AppColors.orangeLight,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppColors.orange.withOpacity(0.3)),
-              ),
-              child: Text(
-                ingredient,
-                style: TextStyles.bodySmall.copyWith(
-                  color: AppColors.orange,
-                ),
-              ),
-            );
-          }).toList(),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildNutritionalInfo() {
+  Widget _buildNutritionalInfo(ThemeData theme) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardTheme.color ?? AppColors.surface,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [
+        boxShadow: theme.brightness == Brightness.light ? [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
-        ],
+        ] : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -432,16 +386,17 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
             'Nutritional Information',
             style: TextStyles.titleMedium.copyWith(
               fontWeight: FontWeight.w600,
+              color: theme.colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 12),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildNutritionItem('Calories', '450'),
-              _buildNutritionItem('Protein', '20g'),
-              _buildNutritionItem('Carbs', '35g'),
-              _buildNutritionItem('Fat', '15g'),
+              _buildNutritionItem('Calories', '450', theme),
+              _buildNutritionItem('Protein', '20g', theme),
+              _buildNutritionItem('Carbs', '35g', theme),
+              _buildNutritionItem('Fat', '15g', theme),
             ],
           ),
         ],
@@ -449,7 +404,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     );
   }
 
-  Widget _buildNutritionItem(String label, String value) {
+  Widget _buildNutritionItem(String label, String value, ThemeData theme) {
     return Column(
       children: [
         Text(
@@ -470,48 +425,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     );
   }
 
-  Widget _buildAllergenInfo() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Allergen Information',
-            style: TextStyles.titleMedium.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Icon(Icons.warning_amber, size: 16, color: AppColors.warning),
-              const SizedBox(width: 8),
-              Text(
-                'Contains: Milk, Gluten',
-                style: TextStyles.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildReviewsSection(Product product) {
+  Widget _buildReviewsSection(Product product, ThemeData theme) {
     if (product.reviews.isEmpty) {
       return Container();
     }
@@ -525,6 +439,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
               'Customer Reviews',
               style: TextStyles.titleMedium.copyWith(
                 fontWeight: FontWeight.w600,
+                color: theme.colorScheme.onSurface,
               ),
             ),
             const Spacer(),
@@ -537,38 +452,25 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           ],
         ),
         const SizedBox(height: 12),
-        ...product.reviews.map((review) => _buildReviewCard(review)),
-        // if (product.reviews.length > 2)
-        //   TextButton(
-        //     onPressed: () {
-        //       // Navigate to full reviews screen
-        //     },
-        //     child: Text(
-        //       'View all reviews',
-        //       style: TextStyles.bodyMedium.copyWith(
-        //         color: AppColors.orange,
-        //         fontWeight: FontWeight.w600,
-        //       ),
-        //     ),
-        //   ),
+        ...product.reviews.map((review) => _buildReviewCard(review, theme)),
       ],
     );
   }
 
-  Widget _buildReviewCard(Review review) {
+  Widget _buildReviewCard(Review review, ThemeData theme) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardTheme.color ?? AppColors.surface,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
+        boxShadow: theme.brightness == Brightness.light ? [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
-        ],
+        ] : null,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -590,6 +492,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                 review.reviewerName.split(' ').first,
                 style: TextStyles.bodyMedium.copyWith(
                   fontWeight: FontWeight.w600,
+                  color: theme.colorScheme.onSurface,
                 ),
               ),
             ],
@@ -598,8 +501,8 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           Text(
             review.comment,
             style: TextStyles.bodyMedium.copyWith(
-              color: AppColors.textSecondary,
-              height: 1.4,
+                color: AppColors.textSecondary,
+                height: 1.4
             ),
           ),
           const SizedBox(height: 8),
@@ -618,12 +521,12 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
     return '${date.day}/${date.month}/${date.year}';
   }
 
-  Widget _buildBottomActionBar(Product product, WidgetRef ref, int qty) {
+  Widget _buildBottomActionBar(Product product, WidgetRef ref, int qty, ThemeData theme) {
     return Container(
       height: 90,
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.bottomNavigationBarTheme.backgroundColor ?? AppColors.surface,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.1),
@@ -641,14 +544,24 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
           // Quantity Selector
           Container(
             decoration: BoxDecoration(
-              color: AppColors.gray100,
+              color: theme.brightness == Brightness.dark
+                  ? AppColors.gray800
+                  : AppColors.gray100,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppColors.gray300),
+              border: Border.all(
+                color: theme.brightness == Brightness.dark
+                    ? AppColors.gray700
+                    : AppColors.gray300,
+              ),
             ),
             child: Row(
               children: [
                 IconButton(
-                  icon: Icon(Icons.remove, size: 20, color: AppColors.textSecondary),
+                  icon: Icon(
+                      Icons.remove,
+                      size: 20,
+                      color: AppColors.textSecondary
+                  ),
                   onPressed: () {
                     if (_quantity > 1) {
                       setState(() {
@@ -664,11 +577,16 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                     '$_quantity',
                     style: TextStyles.titleSmall.copyWith(
                       fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.onSurface,
                     ),
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.add, size: 20, color: AppColors.textSecondary),
+                  icon: Icon(
+                      Icons.add,
+                      size: 20,
+                      color: AppColors.textSecondary
+                  ),
                   onPressed: () {
                     if (_quantity < product.stock) {
                       setState(() {
@@ -681,7 +599,7 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
             ),
           ),
 
-          const SizedBox(width: 16),
+          const SizedBox(width: 12),
 
           // Add to Cart Button
           Expanded(
@@ -690,7 +608,11 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
               child: ElevatedButton(
                 onPressed: () {
                   ref.read(productProvider.notifier).addToCart(product, qty);
-                  Utils.flushbarErrorMessage("Added to cart", context, type: FlushbarType.success);
+                  Utils.flushbarErrorMessage(
+                      "Added to cart",
+                      context,
+                      type: FlushbarType.success
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.orange,
@@ -704,16 +626,14 @@ class _ProductDetailScreenState extends ConsumerState<ProductDetailScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Icon(Icons.shopping_cart, size: 20),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Add to Cart',
-                      style: TextStyles.buttonMedium,
-                    ),
-                    const Spacer(),
-                    Text(
-                      '\$${(product.price * _quantity).toStringAsFixed(2)}',
-                      style: TextStyles.buttonMedium.copyWith(
-                        fontWeight: FontWeight.bold,
+                    const SizedBox(width: 6),
+                    Flexible(
+                      child: Text(
+                        'Add to Cart \$${(product.price * _quantity).toStringAsFixed(2)}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: true,
+                        style: TextStyles.buttonMedium,
                       ),
                     ),
                   ],

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mvvm_folder_strucutre/Core/Theme/app_colors.dart';
 import 'package:mvvm_folder_strucutre/Core/Theme/text_styles.dart';
-import 'package:mvvm_folder_strucutre/View/Home_screen.dart';
+import 'package:mvvm_folder_strucutre/View/home_screen.dart';
 import 'package:mvvm_folder_strucutre/View/cart_screen.dart';
 import 'package:mvvm_folder_strucutre/View/favorite_screen.dart';
 import 'package:mvvm_folder_strucutre/View/profile_screen.dart';
-
 
 class PreHomeScreen extends StatefulWidget {
   final int? screenNo;
@@ -21,12 +19,8 @@ class _PreHomeScreenState extends State<PreHomeScreen> {
   @override
   void initState() {
     super.initState();
-    if (widget.screenNo == 1) {
-      selectedIndex = 1;
-    } else if (widget.screenNo == 2) {
-      selectedIndex = 2;
-    } else if (widget.screenNo == 3) {
-      selectedIndex = 3;
+    if (widget.screenNo != null) {
+      selectedIndex = widget.screenNo!;
     }
   }
 
@@ -40,17 +34,19 @@ class _PreHomeScreenState extends State<PreHomeScreen> {
     ];
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: screens[selectedIndex],
-      bottomNavigationBar: _buildCustomBottomNavBar(),
+      bottomNavigationBar: _buildCustomBottomNavBar(context),
     );
   }
 
-  Widget _buildCustomBottomNavBar() {
+  Widget _buildCustomBottomNavBar(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Container(
       height: 80,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.bottomNavigationBarTheme.backgroundColor, // Use theme background for nav bar
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(20),
           topRight: Radius.circular(20),
@@ -66,17 +62,21 @@ class _PreHomeScreenState extends State<PreHomeScreen> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _buildNavItem(0, Icons.home_rounded, "Home"),
-          _buildNavItem(1, Icons.favorite_rounded, "Favorite"),
-          _buildNavItem(2, Icons.shopping_cart_rounded, "Cart"),
-          _buildNavItem(3, Icons.person_rounded, "Profile"),
+          _buildNavItem(context, 0, Icons.home_rounded, "Home"),
+          _buildNavItem(context, 1, Icons.favorite_rounded, "Favorite"),
+          _buildNavItem(context, 2, Icons.shopping_cart_rounded, "Cart"),
+          _buildNavItem(context, 3, Icons.person_rounded, "Profile"),
         ],
       ),
     );
   }
 
-  Widget _buildNavItem(int index, IconData icon, String label) {
+  Widget _buildNavItem(BuildContext context, int index, IconData icon, String label) {
     final isSelected = selectedIndex == index;
+    final theme = Theme.of(context);
+
+    final selectedColor = theme.primaryColor;
+    final unselectedColor = theme.textTheme.labelSmall!.color!;
 
     return GestureDetector(
       onTap: () {
@@ -87,7 +87,7 @@ class _PreHomeScreenState extends State<PreHomeScreen> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.orange.withOpacity(0.1) : Colors.transparent,
+          color: isSelected ? selectedColor.withOpacity(0.1) : Colors.transparent,
           borderRadius: BorderRadius.circular(16),
         ),
         child: Column(
@@ -96,13 +96,13 @@ class _PreHomeScreenState extends State<PreHomeScreen> {
             Icon(
               icon,
               size: 24,
-              color: isSelected ? AppColors.orange : AppColors.textSecondary,
+              color: isSelected ? selectedColor : unselectedColor,
             ),
             const SizedBox(height: 4),
             Text(
               label,
               style: TextStyles.labelSmall.copyWith(
-                color: isSelected ? AppColors.orange : AppColors.textSecondary,
+                color: isSelected ? selectedColor : unselectedColor,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
               ),
             ),

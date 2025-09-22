@@ -18,6 +18,7 @@ class CartScreen extends ConsumerStatefulWidget {
 }
 
 class _CartScreenState extends ConsumerState<CartScreen> {
+  late Razorpay _razorpay;
 
   @override
   void initState() {
@@ -25,14 +26,51 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(productProvider.notifier).fetchProducts();
     });
+
+    _razorpay = Razorpay();
+    _setupRazorpayCallbacks();
   }
 
-  void _openRazorpayPayment(double totalAmount,BuildContext context) {
-    int amountInPaise = (totalAmount * 100).toInt(); // Convert dollars to paise
+  @override
+  void dispose() {
+    _razorpay.clear();
+    super.dispose();
+  }
+
+  void _setupRazorpayCallbacks() {
+    _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, _handlePaymentSuccess);
+    _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
+    _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
+  }
+
+  void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    Utils.flushbarErrorMessage("Payment Successful: ${response.paymentId}", context, type: FlushbarType.success);
+    ref.read(productProvider.notifier).clearCart();
+    Future.delayed(const Duration(seconds: 2), () {
+      Navigator.pushReplacementNamed(context, RoutesName.preHome, arguments: 0);
+    });
+  }
+
+  void _handlePaymentError(PaymentFailureResponse response) {
+    Utils.flushbarErrorMessage("Payment Failed: ${response.message}", context, type: FlushbarType.error);
+    Future.delayed(const Duration(seconds: 2), () {
+      Navigator.pushReplacementNamed(context, RoutesName.preHome, arguments: 0);
+    });
+  }
+
+  void _handleExternalWallet(ExternalWalletResponse response) {
+    Utils.flushbarErrorMessage("External Wallet Selected: ${response.walletName}", context, type: FlushbarType.warning);
+    Future.delayed(const Duration(seconds: 2), () {
+      Navigator.pushReplacementNamed(context, RoutesName.preHome, arguments: 0);
+    });
+  }
+
+  void _openRazorpayPayment(double totalAmount, BuildContext context) {
+    int amountInPaise = (totalAmount * 100).toInt();
 
     var options = {
-      'key': 'rzp_test_RGeZKafEfOCqn8', // Your Razorpay Key ID
-      'amount': amountInPaise, // Amount in paise
+      'key': 'rzp_test_RGeZKafEfOCqn8',
+      'amount': amountInPaise,
       'name': 'Foodie App',
       'description': 'Cart Payment',
       'prefill': {
@@ -40,55 +78,29 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         'email': 'test@example.com',
       },
       'theme': {
-        'color': '#F37254'
+        'color': Theme.of(context).primaryColor.value.toRadixString(16).substring(2)
       }
     };
 
     try {
-      Razorpay _razorpay = Razorpay();
-      _razorpay.on(Razorpay.EVENT_PAYMENT_SUCCESS, (response) {
-        Utils.flushbarErrorMessage("Payment Successful: ${response.paymentId}", context,type: FlushbarType.success);
-        ref.read(productProvider.notifier).clearCart();
-        Future.delayed(const Duration(seconds: 2), () {
-          Navigator.pushReplacementNamed(context, RoutesName.preHome, arguments: 0);
-        });
-      });
-      _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, (response) {
-
-        Utils.flushbarErrorMessage("Payment Failed: ${response.message}", context,type: FlushbarType.error);
-        ref.read(productProvider.notifier).clearCart();
-        Future.delayed(const Duration(seconds: 2), () {
-          Navigator.pushReplacementNamed(context, RoutesName.preHome, arguments: 0);
-        });
-      });
-      _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, (response) {
-        Utils.flushbarErrorMessage("External Wallet Selected: ${response.walletName}", context,type: FlushbarType.warning);
-        ref.read(productProvider.notifier).clearCart();
-        Future.delayed(const Duration(seconds: 2), () {
-          Navigator.pushReplacementNamed(context, RoutesName.preHome, arguments: 0);
-        });
-      });
-
       _razorpay.open(options);
     } catch (e) {
       print(e.toString());
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(productProvider);
     final theme = Theme.of(context);
-    debugPrint("total : ${state.cartTotal}");
+    final isDark = theme.brightness == Brightness.dark;
+
     final cart = state.cartItems;
-    final cartProducts = state.cartItems.map((e) {
-      return e.product;
-    }).toList().reversed.toList();
+    final cartProducts = state.cartItems.map((e) => e.product).toList().reversed.toList();
 
     if (state.isLoading) {
       return Scaffold(
-        backgroundColor: AppColors.backgroundLight,
+        backgroundColor: theme.scaffoldBackgroundColor,
         body: Center(
           child: CircularProgressIndicator(
             strokeWidth: 3,
@@ -99,25 +111,24 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     }
 
     if (state.cartItems.isEmpty) {
-      return _buildEmptyCart(theme, context);
+      return _buildEmptyCart(theme, context, isDark);
     }
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        automaticallyImplyLeading: false, // removes the default back button
+        automaticallyImplyLeading: false,
         title: Text(
           'My Cart',
-          style: TextStyles.titleLarge.copyWith(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.w700,
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w600,
           ),
         ),
         centerTitle: false,
         elevation: 0,
-        backgroundColor: AppColors.surface,
-        foregroundColor: AppColors.textSecondary,
-        iconTheme: IconThemeData(color: AppColors.textPrimary),
+        backgroundColor: theme.cardTheme.color,
+        foregroundColor: theme.iconTheme.color,
+        iconTheme: theme.iconTheme,
       ),
       body: Column(
         children: [
@@ -129,28 +140,32 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                 final product = cartProducts[index];
                 final cartItem = cart.firstWhere((item) => item.product.id == product.id);
                 final quantity = cartItem.quantity ?? 1;
-                return _buildCartItem(product, quantity, theme, context, state);
+                return _buildCartItem(product, quantity, theme, context, state, isDark);
               },
             ),
           ),
-          _buildCheckoutSection(state, theme, cart),
+          _buildCheckoutSection(state, theme, cart, isDark),
         ],
       ),
     );
   }
 
-  Widget _buildCartItem(Product product, int quantity, ThemeData theme, BuildContext context, ProductState state) {
+  Widget _buildCartItem(Product product, int quantity, ThemeData theme, BuildContext context, ProductState state, bool isDark) {
     final hasDiscount = product.discountPercentage > 0;
     final originalPrice = product.price + (product.price * product.discountPercentage / 100);
+    final cardColor = isDark ? AppColors.gray800 : AppColors.surface;
+    final shadowColor = isDark ? Colors.black.withOpacity(0.3) : Colors.black.withOpacity(0.05);
+    final quantityBgColor = isDark ? AppColors.gray700 : AppColors.gray100;
+    final iconColor = isDark ? AppColors.gray400 : AppColors.gray600;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(20),
+        color: cardColor,
+        borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: shadowColor,
             blurRadius: 16,
             offset: const Offset(0, 6),
           ),
@@ -169,7 +184,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                   height: 100,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
-                    color: AppColors.orangeLight,
+                    color: isDark ? AppColors.gray700 : AppColors.orangeLight,
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(16),
@@ -181,7 +196,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                           errorBuilder: (context, error, stackTrace) => Center(
                             child: Icon(
                               Icons.image_not_supported,
-                              color: AppColors.gray300,
+                              color: isDark ? AppColors.gray500 : AppColors.gray300,
                               size: 32,
                             ),
                           ),
@@ -194,7 +209,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                               end: Alignment.bottomCenter,
                               colors: [
                                 Colors.transparent,
-                                Colors.black.withOpacity(0.05),
+                                Colors.black.withOpacity(isDark ? 0.2 : 0.05),
                               ],
                             ),
                           ),
@@ -214,9 +229,10 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                       // Category
                       Text(
                         product.category.toUpperCase(),
-                        style: TextStyles.labelMedium.copyWith(
-                          color: _getCategoryColor(product.category),
+                        style: theme.textTheme.labelMedium?.copyWith(
+                          color: _getCategoryColor(product.category, isDark),
                           letterSpacing: 0.8,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
 
@@ -225,9 +241,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                       // Title
                       Text(
                         product.title,
-                        style: TextStyles.titleSmall.copyWith(
-                          color: AppColors.textPrimary,
+                        style: theme.textTheme.titleSmall?.copyWith(
                           height: 1.3,
+                          fontWeight: FontWeight.w600,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -243,17 +259,17 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                             children: [
                               Text(
                                 '\$${product.price.toStringAsFixed(2)}',
-                                style: TextStyles.titleMedium.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: AppColors.textPrimary,
+                                style: theme.textTheme.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color: theme.primaryColor,
                                 ),
                               ),
                               if (hasDiscount) ...[
                                 const SizedBox(width: 8),
                                 Text(
                                   '\$${originalPrice.toStringAsFixed(2)}',
-                                  style: TextStyles.bodySmall.copyWith(
-                                    color: AppColors.gray500,
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: isDark ? AppColors.gray500 : AppColors.gray500,
                                     decoration: TextDecoration.lineThrough,
                                   ),
                                 ),
@@ -271,9 +287,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                 ),
                                 child: Text(
                                   '${product.discountPercentage.toStringAsFixed(0)}% OFF',
-                                  style: TextStyles.labelSmall.copyWith(
+                                  style: theme.textTheme.labelSmall?.copyWith(
                                     color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ),
@@ -286,7 +302,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                       // Quantity controls
                       Container(
                         decoration: BoxDecoration(
-                          color: AppColors.gray100,
+                          color: quantityBgColor,
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Row(
@@ -297,7 +313,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                               width: 36,
                               height: 36,
                               decoration: BoxDecoration(
-                                color: AppColors.gray100,
+                                color: quantityBgColor,
                                 borderRadius: const BorderRadius.only(
                                   topLeft: Radius.circular(12),
                                   bottomLeft: Radius.circular(12),
@@ -305,7 +321,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                               ),
                               child: IconButton(
                                 padding: EdgeInsets.zero,
-                                icon: Icon(Icons.remove, size: 18, color: AppColors.gray600),
+                                icon: Icon(Icons.remove, size: 18, color: iconColor),
                                 onPressed: () {
                                   if (quantity > 1) {
                                     ref.read(productProvider.notifier).decreaseQty(product.id);
@@ -320,13 +336,12 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                             Container(
                               width: 40,
                               height: 36,
-                              color: AppColors.gray100,
+                              color: quantityBgColor,
                               alignment: Alignment.center,
                               child: Text(
                                 quantity.toString(),
-                                style: TextStyles.bodyMedium.copyWith(
+                                style: theme.textTheme.bodyMedium?.copyWith(
                                   fontWeight: FontWeight.w600,
-                                  color: AppColors.textPrimary,
                                 ),
                               ),
                             ),
@@ -336,7 +351,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                               width: 36,
                               height: 36,
                               decoration: BoxDecoration(
-                                color: AppColors.primary.withOpacity(0.15),
+                                color: theme.primaryColor.withOpacity(isDark ? 0.3 : 0.15),
                                 borderRadius: const BorderRadius.only(
                                   topRight: Radius.circular(12),
                                   bottomRight: Radius.circular(12),
@@ -344,7 +359,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                               ),
                               child: IconButton(
                                 padding: EdgeInsets.zero,
-                                icon: Icon(Icons.add, size: 18, color: AppColors.primary),
+                                icon: Icon(Icons.add, size: 18, color: theme.primaryColor),
                                 onPressed: () {
                                   ref.read(productProvider.notifier).addToCart(product, 1);
                                 },
@@ -369,23 +384,23 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                 ref.read(productProvider.notifier).removeFromCart(product.id.toString());
               },
               child: Container(
-                width: 32,
-                height: 32,
+                width: 36,
+                height: 36,
                 decoration: BoxDecoration(
-                  color: AppColors.surface,
-                  shape: BoxShape.circle,
+                  color: theme.cardTheme.color,
+                  borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
+                      color: Colors.black.withOpacity(0.1),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
                   ],
                 ),
                 child: Icon(
-                  Icons.close,
-                  size: 18,
-                  color: AppColors.gray600,
+                  Icons.delete,
+                  color: theme.primaryColor,
+                  size: 20,
                 ),
               ),
             ),
@@ -395,7 +410,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     );
   }
 
-  Widget _buildCheckoutSection(ProductState state, ThemeData theme, List<CartItem> cartProducts) {
+  Widget _buildCheckoutSection(ProductState state, ThemeData theme, List<CartItem> cartProducts, bool isDark) {
     double subtotal = 0;
     for (var item in cartProducts) {
       final quantity = item.quantity ?? 1;
@@ -409,14 +424,14 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: theme.cardTheme.color,
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(24),
           topRight: Radius.circular(24),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
             blurRadius: 16,
             offset: const Offset(0, -5),
           ),
@@ -425,13 +440,13 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       child: Column(
         children: [
           // Price breakdown
-          _buildPriceRow('Subtotal', '\$${subtotal.toStringAsFixed(2)}'),
+          _buildPriceRow('Subtotal', '\$${subtotal.toStringAsFixed(2)}', theme),
           const SizedBox(height: 8),
-          _buildPriceRow('Shipping', '\$${shipping.toStringAsFixed(2)}'),
+          _buildPriceRow('Shipping', '\$${shipping.toStringAsFixed(2)}', theme),
           const SizedBox(height: 8),
-          _buildPriceRow('Tax', '\$${tax.toStringAsFixed(2)}'),
+          _buildPriceRow('Tax', '\$${tax.toStringAsFixed(2)}', theme),
           const SizedBox(height: 16),
-          Divider(height: 1, color: AppColors.gray300),
+          Divider(height: 1, color: isDark ? AppColors.gray700 : AppColors.gray300),
           const SizedBox(height: 16),
           // Total
           Row(
@@ -439,16 +454,15 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             children: [
               Text(
                 'Total',
-                style: TextStyles.titleMedium.copyWith(
+                style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
                 ),
               ),
               Text(
                 '\$${total.toStringAsFixed(2)}',
-                style: TextStyles.titleMedium.copyWith(
+                style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: AppColors.primary,
+                  color: theme.primaryColor,
                 ),
               ),
             ],
@@ -460,11 +474,17 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             height: 56,
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
-              gradient: AppColors.primaryGradient,
+              gradient: isDark
+                  ? LinearGradient(
+                colors: [theme.primaryColor, theme.primaryColor.withOpacity(0.8)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              )
+                  : AppColors.primaryGradient,
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.primary.withOpacity(0.3),
+                  color: theme.primaryColor.withOpacity(isDark ? 0.4 : 0.3),
                   blurRadius: 10,
                   offset: const Offset(0, 4),
                 ),
@@ -475,19 +495,14 @@ class _CartScreenState extends ConsumerState<CartScreen> {
               child: InkWell(
                 borderRadius: BorderRadius.circular(16),
                 onTap: () {
-                  const shipping = 5.99;
-                  const tax = 2.50;
-                  final total = state.cartTotal + shipping + tax;
-
-                  _openRazorpayPayment(total,context);
-
-
+                  _openRazorpayPayment(total, context);
                 },
                 child: Center(
                   child: Text(
                     'Proceed to Checkout',
-                    style: TextStyles.buttonLarge.copyWith(
+                    style: theme.textTheme.titleMedium?.copyWith(
                       fontWeight: FontWeight.w600,
+                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -499,43 +514,47 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     );
   }
 
-  Widget _buildPriceRow(String label, String value) {
+  Widget _buildPriceRow(String label, String value, ThemeData theme) {
+    final isDark = theme.brightness == Brightness.dark;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
           label,
-          style: TextStyles.bodyMedium.copyWith(
-            color: AppColors.textSecondary,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: isDark ? AppColors.gray400 : AppColors.textSecondary,
           ),
         ),
         Text(
           value,
-          style: TextStyles.bodyMedium.copyWith(
+          style: theme.textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.w600,
-            color: AppColors.textPrimary,
           ),
         ),
       ],
     );
   }
 
-  Widget _buildEmptyCart(ThemeData theme, BuildContext context) {
+  Widget _buildEmptyCart(ThemeData theme, BuildContext context, bool isDark) {
+    final emptyCartColor = isDark ? AppColors.gray700 : AppColors.orangeLight;
+    final buttonColor = isDark ? AppColors.primaryDark : AppColors.primary;
+
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        automaticallyImplyLeading: false, // removes the default back button
+        automaticallyImplyLeading: false,
         title: Text(
           'My Cart',
-          style: TextStyles.titleLarge.copyWith(
-            color: AppColors.textPrimary,
-            fontWeight: FontWeight.w700,
+          style: theme.textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.w600,
           ),
         ),
-        backgroundColor: AppColors.surface,
+        centerTitle: false,
+        backgroundColor: theme.cardTheme.color,
         elevation: 0,
-        foregroundColor: AppColors.textSecondary,
-        iconTheme: IconThemeData(color: AppColors.textPrimary),
+        foregroundColor: theme.iconTheme.color,
+        iconTheme: theme.iconTheme,
       ),
       body: Center(
         child: Padding(
@@ -547,20 +566,19 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                 width: 120,
                 height: 120,
                 decoration: BoxDecoration(
-                  color: AppColors.orangeLight,
+                  color: theme.primaryColor.withOpacity(0.2),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.shopping_cart_outlined,
                   size: 60,
-                  color: AppColors.primary,
+                  color: theme.primaryColor,
                 ),
               ),
               const SizedBox(height: 24),
               Text(
                 'Your cart is empty',
-                style: TextStyles.headlineSmall.copyWith(
-                  color: AppColors.textPrimary,
+                style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -568,8 +586,8 @@ class _CartScreenState extends ConsumerState<CartScreen> {
               Text(
                 'Looks like you haven\'t added anything to your cart yet',
                 textAlign: TextAlign.center,
-                style: TextStyles.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: isDark ? AppColors.gray400 : AppColors.textSecondary,
                   height: 1.5,
                 ),
               ),
@@ -579,7 +597,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                   Navigator.pushReplacementNamed(context, RoutesName.preHome, arguments: 0);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: buttonColor,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                   shape: RoundedRectangleBorder(
@@ -589,8 +607,9 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                 ),
                 child: Text(
                   'Browse Products',
-                  style: TextStyles.buttonMedium.copyWith(
+                  style: theme.textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.w600,
+                    color: Colors.white,
                   ),
                 ),
               ),
@@ -603,14 +622,13 @@ class _CartScreenState extends ConsumerState<CartScreen> {
 }
 
 // Helper function to get category color
-Color _getCategoryColor(String category) {
+Color _getCategoryColor(String category, bool isDark) {
   final categoryColors = {
-    'groceries': AppColors.success,
-    'fragrances': AppColors.indigo,
-    'furniture': AppColors.orangeDark,
-    'beauty': AppColors.purple,
+    'groceries': isDark ? AppColors.success : AppColors.success,
+    'fragrances': isDark ? AppColors.indigo : AppColors.indigo,
+    'furniture': isDark ? AppColors.orangeDark : AppColors.orange,
+    'beauty': isDark ? AppColors.purple : AppColors.purple,
+    'electronics': isDark ? AppColors.teal : AppColors.teal,
   };
-  return categoryColors[category.toLowerCase()] ?? AppColors.gray600;
+  return categoryColors[category.toLowerCase()] ?? (isDark ? AppColors.gray400 : AppColors.gray600);
 }
-
-

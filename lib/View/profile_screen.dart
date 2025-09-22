@@ -5,7 +5,7 @@ import 'package:mvvm_folder_strucutre/Core/Theme/app_colors.dart';
 import 'package:mvvm_folder_strucutre/Core/Theme/text_styles.dart';
 import 'package:mvvm_folder_strucutre/Repository/auth_user_repository.dart';
 import 'package:mvvm_folder_strucutre/View-Model/auth_view_model.dart';
-
+import '../View-Model/theme_view_model.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -49,19 +49,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: AppColors.textPrimary),
+        centerTitle: false,
         automaticallyImplyLeading: false,
         title: Text(
           'Profile',
-          style: TextStyles.headlineMedium.copyWith(
-              fontSize: 24
+          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+            fontSize: 24,
+            color: Theme.of(context).appBarTheme.foregroundColor,
           ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -72,11 +74,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withOpacity(isDarkMode ? 0.3 : 0.1),
                     blurRadius: 8,
                     offset: const Offset(0, 2),
                   ),
@@ -89,7 +91,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     backgroundColor: AppColors.orange,
                     child: Text(
                       initials ?? '?',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
@@ -103,13 +105,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       children: [
                         Text(
                           userName ?? 'User Name',
-                          style: TextStyles.headlineSmall,
+                          style: Theme.of(context).textTheme.headlineSmall,
                         ),
                         const SizedBox(height: 4),
                         Text(
                           userEmail ?? 'user@example.com',
-                          style: TextStyles.bodyMedium.copyWith(
-                            color: AppColors.textSecondary,
+                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onBackground
+                                .withOpacity(0.6),
                           ),
                         ),
                       ],
@@ -121,38 +126,74 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
             const SizedBox(height: 20),
 
+            // Preferences Section
+            _buildMenuSection('PREFERENCES', [
+              _buildMenuItem(
+                Icons.color_lens_outlined,
+                'Dark Mode',
+                null,
+                trailing: Switch(
+                  value: isDarkMode,
+                  onChanged: (_) {
+                    ref.read(themeProvider.notifier).toggleTheme();
+                  },
+                  activeColor: AppColors.orange,
+                  activeTrackColor: AppColors.orange.withOpacity(0.5),
+                ),
+              ),
+            ]),
+
+            const SizedBox(height: 20),
+
             // Support & About Section
             _buildMenuSection('SUPPORT & ABOUT', [
-              _buildMenuItem(Icons.description_outlined, 'Terms of Service', () {
-                Navigator.pushNamed(context, RoutesName.termsOfService);
-              }),
-              _buildMenuItem(Icons.privacy_tip_outlined, 'Privacy Policy', () {
-                Navigator.pushNamed(context, RoutesName.privacyPolicy);
-              }),
-              _buildMenuItem(Icons.info_outline, 'App Version', null, trailing: Text(
-                'V1.1.0 (Build 1)',
-                style: TextStyles.bodyMedium.copyWith(
-                  color: AppColors.textSecondary,
+              _buildMenuItem(
+                Icons.description_outlined,
+                'Terms of Service',
+                    () => Navigator.pushNamed(context, RoutesName.termsOfService),
+              ),
+              _buildMenuItem(
+                Icons.privacy_tip_outlined,
+                'Privacy Policy',
+                    () => Navigator.pushNamed(context, RoutesName.privacyPolicy),
+              ),
+              _buildMenuItem(
+                Icons.info_outline,
+                'App Version',
+                null,
+                trailing: Text(
+                  'V1.1.0 (Build 1)',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onBackground
+                        .withOpacity(0.6),
+                  ),
                 ),
-              )),
+              ),
             ]),
 
             const SizedBox(height: 20),
 
             // Help & Support
             _buildMenuSection('', [
-              _buildMenuItem(Icons.help_outline, 'Help & Support', () {
-                Navigator.pushNamed(context, RoutesName.helpSupport);
-              }),
+              _buildMenuItem(
+                Icons.help_outline,
+                'Help & Support',
+                    () => Navigator.pushNamed(context, RoutesName.helpSupport),
+              ),
             ]),
 
             const SizedBox(height: 30),
 
-            // Developer Info (small text at bottom)
+            // Developer Info
             Text(
               'Developed by Dhrumil Bhut',
-              style: TextStyles.bodySmall.copyWith(
-                color: AppColors.textSecondary,
+              style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context)
+                    .colorScheme
+                    .onBackground
+                    .withOpacity(0.6),
               ),
             ),
 
@@ -172,15 +213,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
-              child: authState.isLoading ?
-              CircularProgressIndicator(
+              child: authState.isLoading
+                  ? const CircularProgressIndicator(
                 strokeWidth: 3,
                 color: Colors.white,
               )
-                  :
-              Text(
+                  : Text(
                 'Logout',
-                style: TextStyles.buttonLarge,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700
+                ),
               ),
             ),
           ],
@@ -192,11 +235,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget _buildMenuSection(String title, List<Widget> items) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withOpacity(
+              Theme.of(context).brightness == Brightness.dark ? 0.3 : 0.1,
+            ),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -205,22 +250,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (title.isNotEmpty) Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              title,
-              style: TextStyles.titleMedium.copyWith(
-                fontWeight: FontWeight.w600,
+          if (title.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
-          ),
           ...items,
         ],
       ),
     );
   }
 
-  Widget _buildMenuItem(IconData icon, String title, VoidCallback? onTap, {Widget? trailing}) {
+  Widget _buildMenuItem(IconData icon, String title, VoidCallback? onTap,
+      {Widget? trailing}) {
     return ListTile(
       leading: Container(
         width: 40,
@@ -231,8 +278,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         ),
         child: Icon(icon, color: AppColors.orange, size: 20),
       ),
-      title: Text(title, style: TextStyles.bodyLarge),
-      trailing: trailing ?? Icon(Icons.arrow_forward_ios, size: 16, color: AppColors.textSecondary),
+      title: Text(
+        title,
+        style: Theme.of(context).textTheme.bodyLarge,
+      ),
+      trailing: trailing ??
+          Icon(Icons.arrow_forward_ios,
+              size: 16,
+              color: Theme.of(context)
+                  .colorScheme
+                  .onBackground
+                  .withOpacity(0.6)),
       onTap: onTap,
     );
   }

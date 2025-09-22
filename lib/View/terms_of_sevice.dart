@@ -7,9 +7,13 @@ class TermsOfServiceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text('Terms of Service', style: TextStyles.headlineMedium),
+        iconTheme: IconThemeData(
+          color: Colors.black
+        ),
+        title: Text('Terms of Service', style: TextStyles.headlineMedium.copyWith(fontSize: 24)),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
@@ -28,7 +32,7 @@ class TermsOfServiceScreen extends StatelessWidget {
             const SizedBox(height: 20),
             Text(
               'Terms of Service',
-              style: TextStyles.headlineSmall,
+              style: TextStyles.headlineSmall.copyWith(fontSize: 20),
             ),
             const SizedBox(height: 10),
             Text(

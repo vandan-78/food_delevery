@@ -45,11 +45,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     // Navigate on successful login
     if (authState.userLogin != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushNamedAndRemoveUntil(
-            context,
-            RoutesName.preHome, // Assuming you have a home route
-                (route) => false
-        );
+        Navigator.pushReplacementNamed(context, RoutesName.preHome,arguments: 0);
       });
     }
 

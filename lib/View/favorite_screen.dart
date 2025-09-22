@@ -28,6 +28,7 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
   Widget build(BuildContext context) {
     final state = ref.watch(productProvider);
     final size = MediaQuery.sizeOf(context);
+    final theme = Theme.of(context);
 
     final products = state.productResponse?.products.where((product) {
       return state.favoriteItems.contains(product.id.toString());
@@ -35,11 +36,11 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
 
     if (state.isLoading) {
       return Scaffold(
-        backgroundColor: AppColors.backgroundLight,
+        backgroundColor: theme.scaffoldBackgroundColor,
         body: Center(
           child: CircularProgressIndicator(
             strokeWidth: 3,
-            valueColor: AlwaysStoppedAnimation(AppColors.orange),
+            valueColor: AlwaysStoppedAnimation(theme.primaryColor),
           ),
         ),
       );
@@ -47,21 +48,21 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
 
     if (state.error != null) {
       return Scaffold(
-        backgroundColor: AppColors.backgroundLight,
+        backgroundColor: theme.scaffoldBackgroundColor,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.error_outline, size: 48, color: AppColors.gray400),
+              Icon(Icons.error_outline, size: 48, color: theme.colorScheme.onSurface.withOpacity(0.6)),
               const SizedBox(height: 16),
               Text(
                 "Something went wrong",
-                style: TextStyles.bodyLarge.copyWith(color: AppColors.textSecondary),
+                style: theme.textTheme.bodyLarge?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.8)),
               ),
               const SizedBox(height: 8),
               Text(
                 state.error ?? "Unknown error",
-                style: TextStyles.bodyMedium.copyWith(color: AppColors.textTertiary),
+                style: theme.textTheme.bodyMedium?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.6)),
                 textAlign: TextAlign.center,
               ),
             ],
@@ -71,18 +72,20 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.backgroundLight,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        iconTheme: IconThemeData(color: AppColors.textPrimary),
-        automaticallyImplyLeading: false, // removes the default back button
+        automaticallyImplyLeading: false,
         title: Text(
           "My Favorites",
-          style: TextStyles.headlineMedium.copyWith(fontWeight: FontWeight.w500,fontSize: 23),
+          style: theme.textTheme.headlineMedium?.copyWith(
+            fontWeight: FontWeight.w500,
+            fontSize: 23,
+          ),
         ),
         centerTitle: false,
-        backgroundColor: Colors.white,
         elevation: 0,
-        surfaceTintColor: Colors.white,
+        backgroundColor: theme.appBarTheme.backgroundColor,
+        foregroundColor: theme.appBarTheme.foregroundColor,
         actions: [
           if (products.isNotEmpty)
             Padding(
@@ -90,19 +93,23 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
               child: Center(
                 child: Text(
                   '${products.length} items',
-                  style: TextStyles.bodyMedium.copyWith(color: AppColors.textSecondary),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurface.withOpacity(0.7),
+                  ),
                 ),
               ),
             ),
         ],
       ),
       body: products.isEmpty
-          ? _buildEmptyState()
-          : _buildFavoriteList(products, size),
+          ? _buildEmptyState(context)
+          : _buildFavoriteList(products, size, theme),
     );
   }
 
-  Widget _buildEmptyState() {
+  Widget _buildEmptyState(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24),
@@ -113,47 +120,41 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
               width: 120,
               height: 120,
               decoration: BoxDecoration(
-                color: AppColors.orangeLight,
+                color: theme.primaryColor.withOpacity(0.2),
                 shape: BoxShape.circle,
               ),
               child: Icon(
                 Icons.favorite_border_rounded,
                 size: 60,
-                color: AppColors.orange,
+                color: theme.primaryColor,
               ),
             ),
             const SizedBox(height: 24),
             Text(
               'No favorites yet',
-              style: TextStyles.headlineSmall.copyWith(color: AppColors.textPrimary),
+              style: theme.textTheme.headlineSmall,
             ),
             const SizedBox(height: 12),
             Text(
-              'Food items you like will appear here. Start exploring and add your favorites!',
+              'Food items you like will appear here...',
               textAlign: TextAlign.center,
-              style: TextStyles.bodyMedium.copyWith(
-                color: AppColors.textSecondary,
+              style: theme.textTheme.bodyMedium?.copyWith(
                 height: 1.5,
+                color: theme.colorScheme.onSurface.withOpacity(0.7),
               ),
             ),
             const SizedBox(height: 32),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, RoutesName.preHome, arguments: 0);
+                Navigator.pushReplacementNamed(
+                    context, RoutesName.preHome,
+                    arguments: 0);
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.orange,
+                backgroundColor: theme.primaryColor,
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 2,
               ),
-              child: Text(
-                'Explore Food',
-                style: TextStyles.buttonMedium,
-              ),
+              child: Text('Explore Food'),
             ),
           ],
         ),
@@ -161,7 +162,7 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
     );
   }
 
-  Widget _buildFavoriteList(List<Product> products, Size size) {
+  Widget _buildFavoriteList(List<Product> products, Size size, ThemeData theme) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: ListView.separated(
@@ -170,19 +171,19 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
         separatorBuilder: (context, index) => const SizedBox(height: 16),
         itemBuilder: (context, index) {
           final product = products[index];
-          return _buildFavoriteItem(product, size);
+          return _buildFavoriteItem(product, size, theme);
         },
       ),
     );
   }
 
-  Widget _buildFavoriteItem(Product product, Size size) {
+  Widget _buildFavoriteItem(Product product, Size size, ThemeData theme) {
     final hasDiscount = product.discountPercentage > 0;
     final originalPrice = product.price + (product.price * product.discountPercentage / 100);
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardTheme.color,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -205,7 +206,7 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
                   height: size.width * 0.25,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
-                    color: AppColors.gray100,
+                    color: theme.colorScheme.surfaceVariant,
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
@@ -217,7 +218,7 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
                           errorBuilder: (context, error, stackTrace) => Center(
                             child: Icon(
                               Icons.fastfood,
-                              color: AppColors.gray400,
+                              color: theme.colorScheme.onSurface.withOpacity(0.4),
                               size: 32,
                             ),
                           ),
@@ -250,8 +251,8 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
                       // Category
                       Text(
                         product.category.replaceAll('-', ' ').toUpperCase(),
-                        style: TextStyles.labelSmall.copyWith(
-                          color: AppColors.orange,
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: theme.primaryColor,
                           fontWeight: FontWeight.w600,
                           letterSpacing: 0.8,
                         ),
@@ -264,7 +265,7 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
                         padding: const EdgeInsets.only(right: 30.0),
                         child: Text(
                           product.title,
-                          style: TextStyles.titleSmall.copyWith(
+                          style: theme.textTheme.titleSmall?.copyWith(
                             fontWeight: FontWeight.w600,
                             height: 1.3,
                           ),
@@ -286,15 +287,15 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
                           const SizedBox(width: 4),
                           Text(
                             product.rating.toStringAsFixed(1),
-                            style: TextStyles.bodySmall.copyWith(
+                            style: theme.textTheme.bodySmall?.copyWith(
                               fontWeight: FontWeight.w600,
                             ),
                           ),
                           const SizedBox(width: 4),
                           Text(
                             '(${product.reviews.length})',
-                            style: TextStyles.bodySmall.copyWith(
-                              color: AppColors.textSecondary,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onSurface.withOpacity(0.6),
                             ),
                           ),
                         ],
@@ -308,13 +309,13 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
                           Icon(
                             Icons.access_time,
                             size: 14,
-                            color: AppColors.textSecondary,
+                            color: theme.colorScheme.onSurface.withOpacity(0.6),
                           ),
                           const SizedBox(width: 4),
                           Text(
                             '25-35 min',
-                            style: TextStyles.bodySmall.copyWith(
-                              color: AppColors.textSecondary,
+                            style: theme.textTheme.bodySmall?.copyWith(
+                              color: theme.colorScheme.onSurface.withOpacity(0.6),
                             ),
                           ),
                         ],
@@ -330,17 +331,17 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
                             children: [
                               Text(
                                 '\$${product.price.toStringAsFixed(2)}',
-                                style: TextStyles.titleSmall.copyWith(
+                                style: theme.textTheme.titleSmall?.copyWith(
                                   fontWeight: FontWeight.bold,
-                                  color: AppColors.textPrimary,
+                                  color: theme.colorScheme.onSurface,
                                 ),
                               ),
                               if (hasDiscount) ...[
                                 const SizedBox(width: 8),
                                 Text(
                                   '\$${originalPrice.toStringAsFixed(2)}',
-                                  style: TextStyles.bodySmall.copyWith(
-                                    color: AppColors.textTertiary,
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: theme.colorScheme.onSurface.withOpacity(0.5),
                                     decoration: TextDecoration.lineThrough,
                                   ),
                                 ),
@@ -358,7 +359,7 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
                                 ),
                                 child: Text(
                                   '${product.discountPercentage.toStringAsFixed(0)}% OFF',
-                                  style: TextStyles.labelSmall.copyWith(
+                                  style: theme.textTheme.labelSmall?.copyWith(
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -386,7 +387,7 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
                 width: 36,
                 height: 36,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: theme.cardTheme.color,
                   borderRadius: BorderRadius.circular(12),
                   boxShadow: [
                     BoxShadow(
@@ -398,7 +399,7 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
                 ),
                 child: Icon(
                   Icons.favorite_rounded,
-                  color: AppColors.orange,
+                  color: theme.primaryColor,
                   size: 20,
                 ),
               ),
@@ -419,10 +420,10 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
                 width: 36,
                 height: 36,
                 decoration: BoxDecoration(
-                    color: AppColors.orange,
+                    color: theme.primaryColor,
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.orange.withOpacity(0.3),
+                        color: theme.primaryColor.withOpacity(0.3),
                         blurRadius: 8,
                         offset: const Offset(0, 2),
                       ),

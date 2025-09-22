@@ -9,7 +9,10 @@ class HelpSupportScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Help & Support', style: TextStyles.headlineMedium),
+        iconTheme: IconThemeData(
+          color: Colors.black
+        ),
+        title: Text('Help & Support', style: TextStyles.headlineMedium.copyWith(fontSize: 24)),
         backgroundColor: Colors.white,
         elevation: 0,
       ),
@@ -36,7 +39,7 @@ class HelpSupportScreen extends StatelessWidget {
             const SizedBox(height: 20),
             Text(
               'Frequently Asked Questions',
-              style: TextStyles.headlineSmall,
+              style: TextStyles.headlineSmall.copyWith(fontSize: 20),
             ),
             const SizedBox(height: 10),
             _buildFAQItem('How do I reset my password?', 'You can reset your password from the login screen by clicking on "Forgot Password".'),
@@ -45,7 +48,7 @@ class HelpSupportScreen extends StatelessWidget {
             const SizedBox(height: 20),
             Text(
               'Contact Support',
-              style: TextStyles.headlineSmall,
+              style: TextStyles.headlineSmall.copyWith(fontSize: 20),
             ),
             const SizedBox(height: 10),
             Text(
