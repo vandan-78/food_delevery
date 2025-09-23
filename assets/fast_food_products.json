@@ -4,7 +4,7 @@
       "id": 1,
       "title": "Classic Cheeseburger",
       "description": "A juicy beef patty topped with cheddar cheese, lettuce, tomato, pickles, onions, and a special sauce, served on a toasted bun.",
-      "category": "fast food",
+      "category": "Burger",
       "price": 6.99,
       "discountPercentage": 10.0,
       "rating": 4.5,
@@ -66,7 +66,7 @@
       "id": 2,
       "title": "Pepperoni Pizza",
       "description": "A classic pizza with a crispy crust, tangy tomato sauce, mozzarella cheese, and pepperoni slices.",
-      "category": "fast food",
+      "category": "Pizza",
       "price": 12.99,
       "discountPercentage": 15.0,
       "rating": 4.7,
@@ -192,7 +192,7 @@
       "id": 4,
       "title": "Margherita Pizza",
       "description": "A traditional pizza with fresh basil, mozzarella cheese, and a rich tomato sauce on a thin crust.",
-      "category": "fast food",
+      "category": "Pizza",
       "price": 11.99,
       "discountPercentage": 12.0,
       "rating": 4.6,
@@ -316,7 +316,7 @@
       "id": 6,
       "title": "BBQ Bacon Burger",
       "description": "A beef patty topped with crispy bacon, cheddar cheese, BBQ sauce, and onion rings, served on a brioche bun.",
-      "category": "fast food",
+      "category": "Burger",
       "price": 8.49,
       "discountPercentage": 9.0,
       "rating": 4.6,
@@ -377,7 +377,7 @@
       "id": 7,
       "title": "Veggie Pizza",
       "description": "A delicious pizza loaded with bell peppers, onions, mushrooms, olives, and mozzarella cheese on a tomato sauce base.",
-      "category": "fast food",
+      "category": "Pizza",
       "price": 13.49,
       "discountPercentage": 11.0,
       "rating": 4.2,
@@ -498,7 +498,7 @@
       "id": 9,
       "title": "Double Cheeseburger",
       "description": "Two juicy beef patties with double cheddar cheese, lettuce, tomato, pickles, and special sauce on a sesame seed bun.",
-      "category": "fast food",
+      "category": "Burger",
       "price": 8.99,
       "discountPercentage": 10.0,
       "rating": 4.5,
@@ -559,7 +559,7 @@
       "id": 10,
       "title": "Supreme Pizza",
       "description": "A loaded pizza with pepperoni, sausage, bell peppers, onions, mushrooms, and mozzarella cheese.",
-      "category": "fast food",
+      "category": "Pizza",
       "price": 14.99,
       "discountPercentage": 12.0,
       "rating": 4.8,
@@ -739,7 +739,7 @@
       "id": 13,
       "title": "Hawaiian Pizza",
       "description": "A tropical pizza with ham, pineapple, mozzarella cheese, and tomato sauce.",
-      "category": "fast food",
+      "category": "Pizza",
       "price": 13.99,
       "discountPercentage": 10.0,
       "rating": 4.3,
@@ -981,7 +981,7 @@
       "id": 17,
       "title": "Meat Lovers Pizza",
       "description": "A hearty pizza loaded with pepperoni, sausage, bacon, and mozzarella cheese.",
-      "category": "fast food",
+      "category": "Pizza",
       "price": 15.99,
       "discountPercentage": 13.0,
       "rating": 4.7,
@@ -1218,9 +1218,352 @@
         "assets/images/MozzarellaSticks1.png"
       ],
       "thumbnail": "https://cdn.pixabay.com/photo/2017/01/06/17/49/mozzarella-sticks-1959283_1280.jpg"
+    },
+    {
+      "id": 21,
+      "title": "California Roll",
+      "description": "Fresh sushi roll with crab, avocado, and cucumber, topped with sesame seeds.",
+      "category": "sushi",
+      "price": 8.99,
+      "discountPercentage": 5.0,
+      "rating": 4.6,
+      "stock": 60,
+      "tags": ["sushi", "japanese"],
+      "brand": "Tokyo Sushi",
+      "sku": "SUS-CAL-021",
+      "weight": 3,
+      "dimensions": {
+        "width": 15.0,
+        "height": 3.0,
+        "depth": 8.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1 day",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Fresh and delicious!",
+          "date": "2025-09-11T10:00:00.000Z",
+          "reviewerName": "Yuki Tanaka",
+          "reviewerEmail": "yuki.tanaka@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-11T10:00:00.000Z",
+        "updatedAt": "2025-09-11T10:00:00.000Z",
+        "barcode": "1234567890143",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/CaliforniaRoll01.jpg",
+        "assets/images/CaliforniaRoll02.jpg"
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2017/10/15/11/41/sushi-2853382_1280.jpg"
+    },
+    {
+      "id": 22,
+      "title": "Chocolate Lava Cake",
+      "description": "Warm chocolate cake with a molten chocolate center, served with vanilla ice cream.",
+      "category": "dessert",
+      "price": 6.99,
+      "discountPercentage": 10.0,
+      "rating": 4.8,
+      "stock": 45,
+      "tags": ["dessert", "chocolate"],
+      "brand": "Sweet Treats",
+      "sku": "DES-CHO-022",
+      "weight": 4,
+      "dimensions": {
+        "width": 10.0,
+        "height": 6.0,
+        "depth": 10.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Absolute perfection!",
+          "date": "2025-09-11T11:00:00.000Z",
+          "reviewerName": "Sophie Martin",
+          "reviewerEmail": "sophie.martin@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-11T11:00:00.000Z",
+        "updatedAt": "2025-09-11T11:00:00.000Z",
+        "barcode": "1234567890144",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/ChocolateLavaCake01.jpg",
+        "assets/images/ChocolateLavaCake02.jpg"
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2017/08/11/23/14/cake-2633135_1280.jpg"
+    },
+    {
+      "id": 23,
+      "title": "Iced Caramel Macchiato",
+      "description": "Chilled espresso with vanilla syrup, milk, and caramel drizzle over ice.",
+      "category": "drinks",
+      "price": 4.99,
+      "discountPercentage": 0.0,
+      "rating": 4.5,
+      "stock": 100,
+      "tags": ["drinks", "coffee", "cold"],
+      "brand": "Brew House",
+      "sku": "DRK-ICM-023",
+      "weight": 2,
+      "dimensions": {
+        "width": 8.0,
+        "height": 15.0,
+        "depth": 8.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1 day",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 4,
+          "comment": "Refreshing and sweet!",
+          "date": "2025-09-11T12:00:00.000Z",
+          "reviewerName": "Carlos Rodriguez",
+          "reviewerEmail": "carlos.rodriguez@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-11T12:00:00.000Z",
+        "updatedAt": "2025-09-11T12:00:00.000Z",
+        "barcode": "1234567890145",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/IcedCaramelMacchiato.jpeg",
+        "assets/images/IcedCaramelMacchiato02.jpeg"
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2018/01/31/09/57/coffee-3120750_1280.jpg"
+    },
+    {
+      "id": 24,
+      "title": "Salmon Nigiri",
+      "description": "Fresh slices of salmon served over pressed sushi rice.",
+      "category": "sushi",
+      "price": 12.99,
+      "discountPercentage": 8.0,
+      "rating": 4.7,
+      "stock": 40,
+      "tags": ["sushi", "japanese", "salmon"],
+      "brand": "Tokyo Sushi",
+      "sku": "SUS-SAL-024",
+      "weight": 2,
+      "dimensions": {
+        "width": 12.0,
+        "height": 2.0,
+        "depth": 8.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1 day",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Salmon melts in your mouth!",
+          "date": "2025-09-11T13:00:00.000Z",
+          "reviewerName": "Kenji Sato",
+          "reviewerEmail": "kenji.sato@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-11T13:00:00.000Z",
+        "updatedAt": "2025-09-11T13:00:00.000Z",
+        "barcode": "1234567890146",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/SalmonNigiri02.jpg",
+        "assets/images/SalmonNigiri01.jpg"
+      ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2014/04/14/20/15/salmon-324602_1280.jpg"
+    },
+    {
+      "id": 25,
+      "title": "New York Cheesecake",
+      "description": "Creamy classic cheesecake with a graham cracker crust.",
+      "category": "dessert",
+      "price": 5.49,
+      "discountPercentage": 12.0,
+      "rating": 4.9,
+      "stock": 35,
+      "tags": ["dessert", "cheesecake"],
+      "brand": "Sweet Treats",
+      "sku": "DES-NYC-025",
+      "weight": 5,
+      "dimensions": {
+        "width": 12.0,
+        "height": 8.0,
+        "depth": 12.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Creamy and perfect!",
+          "date": "2025-09-11T14:00:00.000Z",
+          "reviewerName": "Maria Garcia",
+          "reviewerEmail": "maria.garcia@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-11T14:00:00.000Z",
+        "updatedAt": "2025-09-11T14:00:00.000Z",
+        "barcode": "1234567890147",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": [
+        "assets/images/NewYorkCheesecake01.jpg",
+        "assets/images/NewYorkCheesecake02.jpg"
+        ],
+      "thumbnail": "https://cdn.pixabay.com/photo/2017/03/19/17/34/cheesecake-2157230_1280.jpg"
+    },
+    {
+      "id": 26,
+      "title": "Mango Smoothie",
+      "description": "Refreshing blended smoothie with fresh mango, yogurt, and honey.",
+      "category": "drinks",
+      "price": 5.49,
+      "discountPercentage": 5.0,
+      "rating": 4.4,
+      "stock": 80,
+      "tags": ["drinks", "smoothie", "fruit"],
+      "brand": "Fruit Bliss",
+      "sku": "DRK-MAN-026",
+      "weight": 3,
+      "dimensions": {
+        "width": 8.0,
+        "height": 15.0,
+        "depth": 8.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1 day",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 4,
+          "comment": "So tropical and fresh!",
+          "date": "2025-09-11T15:00:00.000Z",
+          "reviewerName": "Lisa Chen",
+          "reviewerEmail": "lisa.chen@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-11T15:00:00.000Z",
+        "updatedAt": "2025-09-11T15:00:00.000Z",
+        "barcode": "1234567890148",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": ["assets/images/MangoSmoothie01.jpg"],
+      "thumbnail": "https://cdn.pixabay.com/photo/2017/09/16/15/29/smoothie-2755737_1280.jpg"
+    },
+    {
+      "id": 27,
+      "title": "Tiramisu",
+      "description": "Classic Italian dessert with coffee-soaked ladyfingers and mascarpone cream.",
+      "category": "dessert",
+      "price": 6.99,
+      "discountPercentage": 8.0,
+      "rating": 4.7,
+      "stock": 30,
+      "tags": ["dessert", "italian", "coffee"],
+      "brand": "Sweet Treats",
+      "sku": "DES-TIR-028",
+      "weight": 4,
+      "dimensions": {
+        "width": 10.0,
+        "height": 6.0,
+        "depth": 10.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships in 1-2 business days",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 5,
+          "comment": "Authentic and delicious!",
+          "date": "2025-09-11T17:00:00.000Z",
+          "reviewerName": "Giovanni Rossi",
+          "reviewerEmail": "giovanni.rossi@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-11T17:00:00.000Z",
+        "updatedAt": "2025-09-11T17:00:00.000Z",
+        "barcode": "1234567890150",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": ["assets/images/tiramisu1.jpg"],
+      "thumbnail": "https://cdn.pixabay.com/photo/2017/10/28/19/07/tiramisu-2897900_1280.jpg"
+    },
+    {
+      "id": 28,
+      "title": "Green Tea Ice Cream",
+      "description": "Creamy matcha green tea flavored ice cream.",
+      "category": "dessert",
+      "price": 4.99,
+      "discountPercentage": 10.0,
+      "rating": 4.3,
+      "stock": 65,
+      "tags": ["dessert", "ice cream", "japanese"],
+      "brand": "Frozen Delights",
+      "sku": "DES-GTI-029",
+      "weight": 3,
+      "dimensions": {
+        "width": 10.0,
+        "height": 10.0,
+        "depth": 10.0
+      },
+      "warrantyInformation": "No warranty",
+      "shippingInformation": "Ships with ice pack",
+      "availabilityStatus": "In Stock",
+      "reviews": [
+        {
+          "rating": 4,
+          "comment": "Unique and refreshing!",
+          "date": "2025-09-11T18:00:00.000Z",
+          "reviewerName": "Amy Wong",
+          "reviewerEmail": "amy.wong@x.dummyjson.com"
+        }
+      ],
+      "returnPolicy": "No return policy",
+      "minimumOrderQuantity": 1,
+      "meta": {
+        "createdAt": "2025-09-11T18:00:00.000Z",
+        "updatedAt": "2025-09-11T18:00:00.000Z",
+        "barcode": "1234567890151",
+        "qrCode": "https://cdn.dummyjson.com/public/qr-code.png"
+      },
+      "images": ["assets/images/greenTeaIceCream1.jpg"],
+      "thumbnail": "https://cdn.pixabay.com/photo/2018/04/13/21/40/ice-cream-3317797_1280.jpg"
     }
   ],
-  "total": 20,
+  "total": 29,
   "skip": 0,
   "limit": 20
 }

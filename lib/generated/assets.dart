@@ -8,11 +8,15 @@ class Assets {
   static const String imagesBanner1 = 'assets/images/banner1.jpg';
   static const String imagesBanner2 = 'assets/images/banner2.jpg';
   static const String imagesBanner3 = 'assets/images/banner3.jpg';
+  static const String imagesCaliforniaRoll01 = 'assets/images/CaliforniaRoll01.jpg';
+  static const String imagesCaliforniaRoll02 = 'assets/images/CaliforniaRoll02.jpg';
   static const String imagesChickenNuggets1 = 'assets/images/ChickenNuggets1.jpg';
   static const String imagesChickenQuesadilla1 = 'assets/images/ChickenQuesadilla1.jpg';
   static const String imagesChickenQuesadilla2 = 'assets/images/ChickenQuesadilla2.jpg';
   static const String imagesChickenQuesadilla3 = 'assets/images/ChickenQuesadilla3.webp';
   static const String imagesChickenTenders1 = 'assets/images/ChickenTenders1.jpg';
+  static const String imagesChocolateLavaCake01 = 'assets/images/ChocolateLavaCake01.jpg';
+  static const String imagesChocolateLavaCake02 = 'assets/images/ChocolateLavaCake02.jpg';
   static const String imagesClassicCheeseburger1 = 'assets/images/ClassicCheeseburger1.jpg';
   static const String imagesClassicCheeseburger2 = 'assets/images/ClassicCheeseburger2.jpg';
   static const String imagesClassicCheeseburger3 = 'assets/images/ClassicCheeseburger3.jpg';
@@ -25,21 +29,29 @@ class Assets {
   static const String imagesDoubleCheeseburger2 = 'assets/images/DoubleCheeseburger2.png';
   static const String imagesFishSandwich1 = 'assets/images/FishSandwich1.png';
   static const String imagesFrenchFries1 = 'assets/images/FrenchFries1.jpg';
+  static const String imagesGreenTeaIceCream1 = 'assets/images/greenTeaIceCream1.jpg';
   static const String imagesGrilledChickenWrap1 = 'assets/images/GrilledChickenWrap1.jpg';
   static const String imagesHawaiianPizza1 = 'assets/images/HawaiianPizza1.jpg';
   static const String imagesHawaiianPizza2 = 'assets/images/HawaiianPizza2.jpg';
   static const String imagesHawaiianPizza3 = 'assets/images/HawaiianPizza3.jpg';
+  static const String imagesIcedCaramelMacchiato = 'assets/images/IcedCaramelMacchiato.jpeg';
+  static const String imagesIcedCaramelMacchiato02 = 'assets/images/IcedCaramelMacchiato02.jpeg';
   static const String imagesLogo1 = 'assets/images/logo_1.png';
   static const String imagesLogo2 = 'assets/images/logo_2.png';
+  static const String imagesMangoSmoothie01 = 'assets/images/MangoSmoothie01.jpg';
   static const String imagesMargheritaPizza1 = 'assets/images/MargheritaPizza1.jpg';
   static const String imagesMargheritaPizza2 = 'assets/images/MargheritaPizza2.jpg';
   static const String imagesMargheritaPizza3 = 'assets/images/MargheritaPizza3.jpg';
   static const String imagesMeatLoversPizza2 = 'assets/images/MeatLoversPizza2.jpg';
   static const String imagesMozzarellaSticks1 = 'assets/images/MozzarellaSticks1.png';
+  static const String imagesNewYorkCheesecake01 = 'assets/images/NewYorkCheesecake01.jpg';
+  static const String imagesNewYorkCheesecake02 = 'assets/images/NewYorkCheesecake02.jpg';
   static const String imagesOnionRings1 = 'assets/images/OnionRings1.jpg';
   static const String imagesPepperoniPizza1 = 'assets/images/PepperoniPizza1.jpg';
   static const String imagesPepperoniPizza2 = 'assets/images/PepperoniPizza2.jpg';
   static const String imagesPepperoniPizza3 = 'assets/images/PepperoniPizza3.jpeg';
+  static const String imagesSalmonNigiri01 = 'assets/images/SalmonNigiri01.jpg';
+  static const String imagesSalmonNigiri02 = 'assets/images/SalmonNigiri02.jpg';
   static const String imagesSpicyBeefTaco2 = 'assets/images/SpicyBeefTaco2.jpg';
   static const String imagesSpicyChickenWings1 = 'assets/images/SpicyChickenWings1.jpg';
   static const String imagesSpicyChickenWings2 = 'assets/images/SpicyChickenWings2.jpg';
@@ -48,6 +60,8 @@ class Assets {
   static const String imagesSplash2 = 'assets/images/splash2.jpg';
   static const String imagesSplash3 = 'assets/images/splash3.jpeg';
   static const String imagesSupremePizza1 = 'assets/images/SupremePizza1.jpg';
+  static const String imagesTiramisu1 = 'assets/images/tiramisu1.jpg';
   static const String imagesVeggiePizza1 = 'assets/images/VeggiePizza1.jpg';
+  static const String mvvmFolderStrucutreAssetsFastFoodProducts = 'assets/fast_food_products.json';
 
 }

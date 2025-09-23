@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:mvvm_folder_strucutre/Core/Theme/app_colors.dart';
 import 'package:mvvm_folder_strucutre/Core/Theme/text_styles.dart';
+import 'package:mvvm_folder_strucutre/Core/Util/utils.dart';
 import 'package:mvvm_folder_strucutre/View/pre_home_screen.dart';
 import 'package:mvvm_folder_strucutre/View/product_detail_screen.dart';
 import '../Model/State Model/product_state.dart';
@@ -18,18 +21,22 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
+  String _currentAddress = "Fetching location...";
   final ScrollController _scrollController = ScrollController();
   int _selectedCategoryIndex = 0;
   TextEditingController searchController = TextEditingController();
   int _currentBannerIndex = 0;
 
   final List<Map<String, dynamic>> categories = [
-    {'name': 'All', 'icon': Icons.restaurant_menu, 'count': 45},
-    {'name': 'Pizza', 'icon': Icons.local_pizza, 'count': 12},
-    {'name': 'Burger', 'icon': Icons.fastfood, 'count': 8},
-    {'name': 'Sushi', 'icon': Icons.set_meal, 'count': 6},
-    {'name': 'Dessert', 'icon': Icons.cake, 'count': 10},
-    {'name': 'Drinks', 'icon': Icons.local_drink, 'count': 9},
+    {'name': 'All', 'icon': Icons.restaurant_menu, 'count': 45, 'type': 'all'},
+    {'name': 'Pizza', 'icon': Icons.local_pizza, 'count': 12, 'type': 'pizza'},
+    {'name': 'Burger', 'icon': Icons.fastfood, 'count': 8, 'type': 'burger'},
+    {'name': 'Sushi', 'icon': Icons.set_meal, 'count': 6, 'type': 'sushi'},
+    {'name': 'Dessert', 'icon': Icons.cake, 'count': 10, 'type': 'dessert'},
+    {'name': 'Drinks', 'icon': Icons.local_drink, 'count': 9, 'type': 'drinks'},
+    {'name': 'Chicken', 'icon': Icons.kebab_dining, 'count': 7, 'type': 'chicken'},
+    {'name': 'Sides', 'icon': Icons.lunch_dining, 'count': 5, 'type': 'sides'},
+
   ];
 
   final banners = [
@@ -41,13 +48,157 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   void initState() {
     super.initState();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getUserLocation();
       ref.read(productProvider.notifier).fetchProducts();
       ref.read(productProvider.notifier).showFavoriteItems();
     });
 
-    // Auto-animate banners
     _startBannerAnimation();
+  }
+
+  // Filter products based on selected category and search text
+  List<Product> _getFilteredProducts(List<Product> products) {
+    String searchText = searchController.text.toLowerCase();
+    String selectedCategory = categories[_selectedCategoryIndex]['type'] as String;
+
+    return products.where((product) {
+      // First filter by search text
+      bool matchesSearch = searchText.isEmpty ||
+          product.title.toLowerCase().contains(searchText) ||
+          product.description.toLowerCase().contains(searchText) ||
+          product.tags.any((tag) => tag.toLowerCase().contains(searchText));
+
+      // Then filter by category
+      bool matchesCategory = selectedCategory == 'all' ||
+          product.category.toLowerCase().contains(selectedCategory) ||
+          product.tags.any((tag) => tag.toLowerCase().contains(selectedCategory)) ||
+          (selectedCategory == 'pizza' && product.title.toLowerCase().contains('pizza')) ||
+          (selectedCategory == 'burger' && product.title.toLowerCase().contains('burger')) ||
+          (selectedCategory == 'sushi' && product.category.toLowerCase().contains('sushi')) ||
+          (selectedCategory == 'dessert' && product.category.toLowerCase().contains('dessert')) ||
+          (selectedCategory == 'drinks' && product.category.toLowerCase().contains('drinks')) ||
+          (selectedCategory == 'chicken' &&
+              (product.title.toLowerCase().contains('chicken') ||
+                  product.tags.any((tag) => tag.toLowerCase().contains('chicken')))) ||
+          (selectedCategory == 'sides' &&
+              (product.tags.any((tag) => tag.toLowerCase().contains('sides')) ||
+                  product.title.toLowerCase().contains('fries') ||
+                  product.title.toLowerCase().contains('rings') ||
+                  product.title.toLowerCase().contains('sticks')));
+
+      return matchesSearch && matchesCategory;
+    }).toList();
+  }
+
+  // Update category counts based on actual products
+  void _updateCategoryCounts(List<Product> products) {
+    for (var category in categories) {
+      String categoryType = category['type'] as String;
+      int count = _getProductsByCategory(products, categoryType).length;
+      category['count'] = count;
+    }
+  }
+
+  List<Product> _getProductsByCategory(List<Product> products, String categoryType) {
+    if (categoryType == 'all') return products;
+
+    return products.where((product) {
+      return product.category.toLowerCase().contains(categoryType) ||
+          product.tags.any((tag) => tag.toLowerCase().contains(categoryType)) ||
+          (categoryType == 'pizza' && product.title.toLowerCase().contains('pizza')) ||
+          (categoryType == 'burger' && product.title.toLowerCase().contains('burger')) ||
+          (categoryType == 'sushi' && product.category.toLowerCase().contains('sushi')) ||
+          (categoryType == 'dessert' && product.category.toLowerCase().contains('dessert')) ||
+          (categoryType == 'drinks' && product.category.toLowerCase().contains('drinks')) ||
+          (categoryType == 'chicken' &&
+              (product.title.toLowerCase().contains('chicken') ||
+                  product.tags.any((tag) => tag.toLowerCase().contains('chicken')))) ||
+          (categoryType == 'sides' &&
+              (product.tags.any((tag) => tag.toLowerCase().contains('sides')) ||
+                  product.title.toLowerCase().contains('fries') ||
+                  product.title.toLowerCase().contains('rings') ||
+                  product.title.toLowerCase().contains('sticks')));
+    }).toList();
+  }
+
+  Future<void> _getUserLocation() async {
+    try {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        setState(() => _currentAddress = "Enable Location!.");
+        _showSettingsDialog("Location Services", "Enable location services", true);
+        return;
+      }
+
+      LocationPermission permission = await Geolocator.checkPermission();
+
+      if (permission == LocationPermission.deniedForever) {
+        setState(() => _currentAddress = "Enable permission!.");
+        _showSettingsDialog("Location Permission", "Enable location permission", false);
+        return;
+      }
+
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+
+        if (permission == LocationPermission.deniedForever) {
+          setState(() => _currentAddress = "Enable permission!.");
+          _showSettingsDialog("Location Permission", "Enable location permission", false);
+          return;
+        }
+
+        if (permission == LocationPermission.denied) {
+          setState(() => _currentAddress = "Permission denied");
+          return;
+        }
+      }
+
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best,
+      );
+
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude, position.longitude,
+      );
+
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
+        setState(() {
+          _currentAddress = "${place.subLocality ?? ''}, ${place.locality ?? ''}";
+        });
+      }
+
+    } catch (e) {
+      setState(() => _currentAddress = "Location error");
+      print("Location error: $e");
+    }
+  }
+
+  void _showSettingsDialog(String title, String message, bool isLocationService) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text("$message. Please enable it in settings."),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Cancel"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              isLocationService
+                  ? Geolocator.openLocationSettings()
+                  : Geolocator.openAppSettings();
+            },
+            child: Text("Open Settings"),
+          ),
+        ],
+      ),
+    );
   }
 
   void _startBannerAnimation() {
@@ -74,7 +225,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       return "Good night!";
     }
   }
-
 
   Future<bool?> _showExitDialog(BuildContext context) {
     final theme = Theme.of(context);
@@ -110,9 +260,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pop(false); // close dialog
-                SystemNavigator.pop(); // ✅ closes the app
-                // Or: exit(0); (not recommended)
+                Navigator.of(context).pop(false);
+                SystemNavigator.pop();
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: theme.primaryColor,
@@ -127,8 +276,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       },
     );
   }
-
-
 
   @override
   void dispose() {
@@ -193,22 +340,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ],
           ),
         ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _getUserLocation,
+          child: Icon(Icons.location_on),
+        ),
       );
     }
 
     final products = state.products ?? [];
-    final filteredProducts = searchController.text.isEmpty
-        ? products
-        : products.where((product) {
-      return product.title.toLowerCase().contains(searchController.text.toLowerCase());
-    }).toList();
+
+    // Update category counts based on actual products
+    if (products.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _updateCategoryCounts(products);
+      });
+    }
+
+    final filteredProducts = _getFilteredProducts(products);
 
     return WillPopScope(
       onWillPop: () async {
         final shouldExit = await _showExitDialog(context);
-        return shouldExit ?? false; // if null → default to false
+        return shouldExit ?? false;
       },
-
       child: Scaffold(
         backgroundColor: isDarkMode ? AppColors.backgroundDark : AppColors.backgroundLight,
         body: RefreshIndicator(
@@ -220,25 +374,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             controller: _scrollController,
             physics: const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
             slivers: [
-              // Custom App Bar
               _buildCustomAppBar(size, state, isDarkMode),
-
-              // Banner Slider
               _buildBannerSlider(isDarkMode),
-
-              // Categories Section
               _buildCategoriesSection(isDarkMode),
-
-              // Featured Restaurants Header
               _buildFeaturedHeader(isDarkMode),
-
-              // Featured Restaurants
               _buildFeaturedRestaurants(isDarkMode),
-
-              // Popular Items Header
               _buildPopularItemsHeader(filteredProducts.length, isDarkMode),
-
-              // Products Grid
               _buildProductsGrid(filteredProducts, state, isDarkMode),
             ],
           ),
@@ -246,6 +387,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       ),
     );
   }
+
+  // ... (Keep all your existing _build methods exactly the same, they don't need changes)
 
   SliverAppBar _buildCustomAppBar(Size size, ProductState state, bool isDarkMode) {
     return SliverAppBar(
@@ -271,7 +414,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           padding: const EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 10),
           child: Row(
             children: [
-              // Location and Greeting
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -289,7 +431,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         Icon(Icons.location_on, size: 20, color: AppColors.orange),
                         const SizedBox(width: 4),
                         Text(
-                          'New York, NY',
+                          _currentAddress,
                           style: TextStyles.titleSmall.copyWith(
                             color: isDarkMode ? AppColors.textDark : AppColors.textPrimary,
                             fontSize: 18,
@@ -300,8 +442,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   ],
                 ),
               ),
-
-              // Cart Button with Badge
               Stack(
                 children: [
                   IconButton(
@@ -341,7 +481,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 ],
               ),
               const SizedBox(width: 8),
-              // Favorite Button
               Stack(
                 children: [
                   IconButton(
@@ -404,6 +543,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
             child: TextField(
               controller: searchController,
+              onChanged: (value) {
+                setState(() {}); // Rebuild when search text changes
+              },
               style: TextStyles.bodyMedium.copyWith(
                 color: isDarkMode ? AppColors.textDark : AppColors.textPrimary,
               ),
@@ -435,113 +577,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 filled: true,
                 fillColor: isDarkMode ? AppColors.gray600 : AppColors.gray50,
               ),
-              onChanged: (value) {
-                setState(() {});
-              },
             ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  SliverToBoxAdapter _buildBannerSlider(bool isDarkMode) {
-    return SliverToBoxAdapter(
-      child: Container(
-        height: 160,
-        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(isDarkMode ? 0.4 : 0.1),
-              blurRadius: 15,
-              offset: const Offset(0, 5),
-            ),
-          ],
-        ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: Stack(
-            children: [
-              // Banner Image
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 500),
-                child: Image.asset(
-                  banners[_currentBannerIndex],
-                  key: ValueKey<int>(_currentBannerIndex),
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: double.infinity,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    color: isDarkMode ? AppColors.gray700 : AppColors.gray200,
-                    child: Center(
-                      child: Icon(
-                        Icons.fastfood,
-                        size: 60,
-                        color: isDarkMode ? AppColors.gray500 : AppColors.gray400,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-
-              // Gradient Overlay
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Colors.transparent, Colors.black.withOpacity(0.4)],
-                  ),
-                ),
-              ),
-
-              // Banner Content
-              Positioned(
-                bottom: 20,
-                left: 20,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Special Offer',
-                      style: TextStyles.titleMedium.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'Get 50% off on your first order',
-                      style: TextStyles.bodyMedium.copyWith(color: Colors.white),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Indicator
-              Positioned(
-                bottom: 15,
-                right: 20,
-                child: Row(
-                  children: List.generate(banners.length, (index) {
-                    return AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      width: _currentBannerIndex == index ? 20 : 8,
-                      height: 8,
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      decoration: BoxDecoration(
-                        color: _currentBannerIndex == index
-                            ? Colors.white
-                            : Colors.white.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    );
-                  }),
-                ),
-              ),
-            ],
           ),
         ),
       ),
@@ -631,6 +667,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
+                        const SizedBox(height: 4),
+                        Text(
+                          '${category['count']}',
+                          style: TextStyles.labelSmall.copyWith(
+                            color: isSelected
+                                ? AppColors.orange
+                                : isDarkMode ? AppColors.gray400 : AppColors.textTertiary,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -639,6 +684,104 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // ... (Keep all other _build methods exactly as they were)
+
+  SliverToBoxAdapter _buildBannerSlider(bool isDarkMode) {
+    return SliverToBoxAdapter(
+      child: Container(
+        height: 160,
+        margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(isDarkMode ? 0.4 : 0.1),
+              blurRadius: 15,
+              offset: const Offset(0, 5),
+            ),
+          ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Stack(
+            children: [
+              AnimatedSwitcher(
+                duration: const Duration(milliseconds: 500),
+                child: Image.asset(
+                  banners[_currentBannerIndex],
+                  key: ValueKey<int>(_currentBannerIndex),
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    color: isDarkMode ? AppColors.gray700 : AppColors.gray200,
+                    child: Center(
+                      child: Icon(
+                        Icons.fastfood,
+                        size: 60,
+                        color: isDarkMode ? AppColors.gray500 : AppColors.gray400,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.transparent, Colors.black.withOpacity(0.4)],
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 20,
+                left: 20,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Special Offer',
+                      style: TextStyles.titleMedium.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Get 50% off on your first order',
+                      style: TextStyles.bodyMedium.copyWith(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                bottom: 15,
+                right: 20,
+                child: Row(
+                  children: List.generate(banners.length, (index) {
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      width: _currentBannerIndex == index ? 20 : 8,
+                      height: 8,
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      decoration: BoxDecoration(
+                        color: _currentBannerIndex == index
+                            ? Colors.white
+                            : Colors.white.withOpacity(0.5),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -766,13 +909,15 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   SliverToBoxAdapter _buildPopularItemsHeader(int productCount, bool isDarkMode) {
+    final selectedCategory = categories[_selectedCategoryIndex]['name'] as String;
+
     return SliverToBoxAdapter(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         child: Row(
           children: [
             Text(
-              'Popular Items',
+              selectedCategory == 'All' ? 'Popular Items' : '$selectedCategory Items',
               style: TextStyles.headlineSmall.copyWith(
                 color: isDarkMode ? AppColors.textDark : AppColors.textPrimary,
               ),
@@ -803,14 +948,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     color: isDarkMode ? AppColors.gray500 : AppColors.gray300),
                 const SizedBox(height: 16),
                 Text(
-                  'No food items found',
+                  'No items found',
                   style: TextStyles.bodyLarge.copyWith(
                     color: isDarkMode ? AppColors.textDark : AppColors.textSecondary,
                   ),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Try a different search term',
+                  'Try a different category or search term',
                   style: TextStyles.bodyMedium.copyWith(
                     color: isDarkMode ? AppColors.gray400 : AppColors.textTertiary,
                   ),
@@ -847,6 +992,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
   }
 }
+
 
 class FoodItemCard extends StatelessWidget {
   final Product product;
@@ -1062,6 +1208,7 @@ class FoodItemCard extends StatelessWidget {
                     child: ElevatedButton(
                       onPressed: () {
                         ref.read(productProvider.notifier).addToCart(product, 1);
+                        Utils.toastMessage("added successfully",type: ToastType.success);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppColors.orange,

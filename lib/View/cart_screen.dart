@@ -8,6 +8,7 @@ import '../Core/Routes/routes_name.dart';
 import '../Core/Util/utils.dart';
 import '../Model/product_model.dart';
 import '../Core/theme/app_colors.dart';
+import '../Repository/product_repository.dart';
 
 
 class CartScreen extends ConsumerStatefulWidget {
@@ -68,6 +69,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
   void _openRazorpayPayment(double totalAmount, BuildContext context) {
     int amountInPaise = (totalAmount * 100).toInt();
 
+
     var options = {
       'key': 'rzp_test_RGeZKafEfOCqn8',
       'amount': amountInPaise,
@@ -78,7 +80,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
         'email': 'dhrumil@example.com',
       },
       'theme': {
-        'color': Theme.of(context).primaryColor
+        'color': '#FF6B35'
       }
     };
 
